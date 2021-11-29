@@ -1,4 +1,4 @@
-const window=require('global')
+
 const express=require('express')
 const bodyParser=require('body-parser')
 const db=require('./database.js')
@@ -51,7 +51,6 @@ app.post("/",function(req,res){
         else
         {      
             console.log("kesa hai ye alam")
-            Window.alert('WRONG LOGIN CREDENTIALS PLEASE TRY AGAIN')
         }
      
 
