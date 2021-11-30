@@ -46,7 +46,7 @@ app.post("/",function(req,res){
         if(user.rows.length != 0)
         {
             console.log(user)
-            res.render('home',{Name:user.rows[0].FNAME,Phone:user.rows[0].PHONE,Email:user.rows[0].EMAIL})
+            res.render('welcome',{Name:user.rows[0].FNAME,Phone:user.rows[0].PHONE,Email:user.rows[0].EMAIL})
         }
         else
         {      
