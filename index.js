@@ -17,6 +17,18 @@ app.get('/register.html',function(req,res){
     res.sendFile(__dirname+'/public/html/register.html')
 })
 
+app.get('/grades',function(req,res)
+{
+    res.render('grades')
+})
+app.get('/attendence',function(req,res)
+{
+    res.render('attendence')
+})
+app.get('/contactteacher',function(req,res){
+    res.render('contactteacher')
+})
+
 
 app.post("/register.html",function(req,res){
     var userName=req.body.userName
