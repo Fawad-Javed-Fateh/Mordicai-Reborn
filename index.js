@@ -3,12 +3,16 @@ const express=require('express')
 const bodyParser=require('body-parser')
 const db=require('./database.js')
 const ejs=require('ejs')
+const linkVarCatcher=('./buttonchanges.js')
 
 
 const app=express()
 app.set('view engine', 'ejs');
 app.use(express.static("public"))
 app.use(bodyParser.urlencoded({extended:true}))
+
+var userName
+var gradeChoiceChecker=0;
 
 app.get('/',function(req,res){
     res.sendFile(__dirname+'/public/html/login.html')
@@ -19,17 +23,51 @@ app.get('/register.html',function(req,res){
 
 app.get('/grades',function(req,res)
 {
-    res.render('grades')
+    var semesters=['Fall 2021','Spring 2021','Summer 2021']
+    res.render('grades',{Semesters:semesters})
 })
+app.get('/home',function(req,res)
+{
+
+})
+app.get('/grades')
 app.get('/attendence',function(req,res)
 {
-    res.render('attendence')
+    var marks={
+        mid1:7,
+        mid2:8,
+        finals:55
+    }
+    res.render('viewgrades',{marks:marks})
 })
 app.get('/contactteacher',function(req,res){
     res.render('contactteacher')
 })
 
+app.post("/grades",function(req,res){
+    gradeChoiceChecker++;
+    if(gradeChoiceChecker==1)
+    {
+        var semester=req.body.semesterSelector
+        console.log(semester)
+        console.log(semester)
+        var semesters=['Fall 2021','Spring 2021','Summer 2021']
+        var courses=['PF','AP','CAL']
+        res.render('grades',{Semesters:courses})
+    }
+    else if(gradeChoiceChecker==2){
+        var course=req.body.semesterSelector
+        console.log(course)
+        var marks={
+            mid1:7,
+            mid2:8,
+            finals:55
+        }
+        gradeChoiceChecker=0;
+        res.render('viewgrades',{marks:marks})
+    }
 
+})
 app.post("/register.html",function(req,res){
     var userName=req.body.userName
     var email=req.body.emailAddress
@@ -50,7 +88,7 @@ app.post("/register.html",function(req,res){
 })
 
 app.post("/",function(req,res){
-    var userName=req.body.userName
+    userName=req.body.userName
     var pWord=req.body.pWord
     console.log(userName+" "+pWord)
     db.getStudent(userName,pWord).then(user=>{

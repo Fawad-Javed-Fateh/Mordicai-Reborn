@@ -11247,3 +11247,25 @@ header.masthead .site-heading .h1 {
     font-size: 2.25rem;
   }
 }
+
+.grades-dropdowns{
+  width:45%;
+  margin: 0 auto;
+}
+.semester-dropdown{
+  display:flex;
+  justify-content: center;
+  margin-right: auto;
+  align-items: center;
+  
+}
+.courses-dropdown{
+  display:inline-block;
+  justify-content: center;
+  align-items: center;
+  margin-left:auto
+  
+}
+.gradeSeperator{
+  padding-top: 10%;
+}
