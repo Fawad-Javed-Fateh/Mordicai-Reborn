@@ -35,40 +35,36 @@
         <!-- Main Content-->
         <main class="mb-4">
             
-            <form action="/grades" method="post" id="confirmGrade">
-                <div class="grades-dropdowns">
-                
-                    <div class="semester-dropdown">
-                      <select name="semesterSelector"class="form-select" aria-label="Default select example">
-                          <option selected>Select Semester</option>
-                          <% for(var i=0;i<Semesters.length;i++) {%>
-                              <option value="<%=i%>"><%=Semesters[i]%></option>
-                          <%}%>
-                        </select>
-                    
-                      </div>
-    
-                      <!-- <div class="courses-dropdown">
-                        <select class="form-select" aria-label="Default select example">
-                            <script>
-                                document.getElementById('semesterDropdown').addEventListener('change', function() {
-                                   var testSem= this.options[this.selectedIndex].value
-                                });
-                            </script>
-                            <option selected>Select Course</option>
-                            
-                          </select>
-                      </div> -->
-                </div>
-                <div class="gradeSeperator">
-                    <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-secondary" name='confirmButton' id='confirmButtonGrades'>Confirm</button>
-                    </div>
-                </div>
-
-                
-            </form>
-           
+            <table class="table table-dark table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Mid1</th>
+                    <th scope="col">Mid2</th>
+                    <th scope="col">Final</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Obtained</th>
+                    <td><%=marks.mid1%></td>
+                    <td><%=marks.mid2%></td>
+                    <td><%=marks.finals%></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Total</th>
+                    <td>15</td>
+                    <td>15</td>
+                    <td>75</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">%</th>
+                    <td><%= ((marks.mid1)/15)*100%></td>
+                    <td><%= ((marks.mid2)/15)*100%></td>
+                    <td><%= ((marks.finals)/75)*100%></td>
+                  </tr>
+                </tbody>
+              </table>
         </main>
         <!-- Footer-->
         <%-include('partials/footer.ejs')%>
