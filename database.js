@@ -11,13 +11,13 @@ async function getStudent(userName,pWord) {
 
   try {
     connection = await oracledb.getConnection( {
-      user          : "PROJECTDB",
+      user          : "Mordicai",
       password      : 'fast123',
       connectString : "localhost:1521/xe"
     });
 
     const result = await connection.execute(
-      `select * from students where fname = :1 and password = :2  `
+      `select * from student where name = :1 and id = :2  `
        ,[userName,pWord],  // bind value for :id
     );
    // console.log(result);
@@ -69,7 +69,7 @@ async function insertStudent(userName,pWord,email,phone) {
     }
   }
 //insertStudent('Spongebob','123')
-//getStudent('Spongebob','123');
+getStudent('Ali',331);
 
 module.exports={
     insertStudent,
