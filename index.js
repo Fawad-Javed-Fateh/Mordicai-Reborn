@@ -91,12 +91,13 @@ app.post("/",function(req,res){
     userName=req.body.userName
     var pWord=req.body.pWord
     console.log(userName+" "+pWord)
+    console.log(typeof(pWord))
     db.getStudent(userName,pWord).then(user=>{
         
         if(user.rows.length != 0)
         {
             console.log(user)
-            res.render('welcome',{Name:user.rows[0].FNAME,Phone:user.rows[0].PHONE,Email:user.rows[0].EMAIL})
+            res.render('welcome',{NAME:user.rows[0].NAME,BATCH:user.rows[0].BATCH,EMAIL:user.rows[0].EMAIL,ADDRESS:user.rows[0].ADDRESS,ID:user.rows[0].ID,INSTRUCTORS_ID:user.rows[0].INSTRUCTORS_INS_ID,ALLOCATEDSECTION:user.rows[0].SECTIONS_ID,PAY:user.rows[0].PAY})
         }
         else
         {      
