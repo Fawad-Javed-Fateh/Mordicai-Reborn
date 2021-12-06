@@ -14,6 +14,27 @@ app.use(bodyParser.urlencoded({extended:true}))
 var userName
 var gradeChoiceChecker=0;
 
+var student ={
+   Name:"",
+   Batch:0,
+   ID:0,
+   Address:"",
+   Email:"",
+   Instructor_Ins_ID:0,
+   Allocated_Section:"",
+   Pay:0
+}
+var instructor={
+    Name:"",
+    Ins_ID:0,
+    Start_Date:"",
+    Salary:0,
+    Address:"",
+    Email:"",
+    Departments_D_Code:0,
+    Designation:""
+}
+
 app.get('/',function(req,res){
     res.sendFile(__dirname+'/public/html/login.html')
 })
@@ -31,6 +52,13 @@ app.get('/home',function(req,res)
 
 })
 app.get('/grades')
+app.get('/viewcourses',function(req,res){
+    db.getTeacherCourses(instructor.Ins_ID).then(user=>{
+        console.log(user)
+        res.render('viewcourses',{RESULT:user})            
+    })
+    
+})
 app.get('/attendence',function(req,res)
 {
     var marks={
@@ -90,23 +118,59 @@ app.post("/register.html",function(req,res){
 app.post("/",function(req,res){
     userName=req.body.userName
     var pWord=req.body.pWord
+    var isTeacher=req.body.teacherCheckBox
     console.log(userName+" "+pWord)
     console.log(typeof(pWord))
-    db.getStudent(userName,pWord).then(user=>{
+    if(isTeacher)
+    {
+            
+        db.getTeacher(isTeacher,pWord).then(user=>{
         
-        if(user.rows.length != 0)
-        {
-            console.log(user)
-            res.render('welcome',{NAME:user.rows[0].NAME,BATCH:user.rows[0].BATCH,EMAIL:user.rows[0].EMAIL,ADDRESS:user.rows[0].ADDRESS,ID:user.rows[0].ID,INSTRUCTORS_ID:user.rows[0].INSTRUCTORS_INS_ID,ALLOCATEDSECTION:user.rows[0].SECTIONS_ID,PAY:user.rows[0].PAY})
-        }
-        else
-        {      
-            console.log("kesa hai ye alam")
-        }
-     
-
-    })
+            if(user.rows.length != 0)
+            {
+                console.log(user)
+                instructor.Ins_ID=user.rows[0].INS_ID
+                instructor.Address=user.rows[0].ADDRESS
+                instructor.Departments_D_Code=user.rows[0].DEPARTMENTS_D_CODE
+                instructor.Designation=user.rows[0].DESIGNATION
+                instructor.Email=user.rows[0].EMAIL
+                instructor.Salary=user.rows[0].SALARY
+                instructor.Name=user.rows[0].NAME
+                instructor.Start_Date=user.rows[0].START_DATE
+                res.render('welcome',{isTeacher:isTeacher,NAME:instructor.Name,INS_ID:instructor.Ins_ID,ADDRESS:instructor.Address,START_DATE:instructor.Start_Date,EMAIL:instructor.Email})
+                //res.render('welcome',{isTeacher:isTeacher,NAME:user.rows[0].NAME,BATCH:user.rows[0].BATCH,EMAIL:user.rows[0].EMAIL,ADDRESS:user.rows[0].ADDRESS,ID:user.rows[0].ID,INSTRUCTORS_ID:user.rows[0].INSTRUCTORS_INS_ID,ALLOCATEDSECTION:user.rows[0].SECTIONS_ID,PAY:user.rows[0].PAY})
+            }
+            else
+            {      
+                console.log("kesa hai ye alam")
+            }
+         
     
+        })
+    }
+    else{
+        console.log("Not a teacher")
+        db.studentGetter(userName,pWord).then(user=>{
+            if(user.rows.length != 0)
+            {
+                console.log(user)
+                student.Name=user.rows[0].NAME
+                student.Batch=user.rows[0].BATCH
+                student.Email=user.rows[0].EMAIL
+                student.ID=user.rows[0].ID
+                student.Allocated_Section=user.rows[0].SECTIONS_ID
+                student.Instructor_Ins_ID=user.rows[0].INSTRUCTORS_INS_ID
+                student.Pay=user.rows[0].PAY
+                student.Address=user.rows[0].ADDRESS
+
+                res.render('welcome',{isTeacher:isTeacher,NAME:student.Name,BATCH:student.Batch,EMAIL:student.Email,ADDRESS:student.Address,ID:student.ID,INSTRUCTORS_ID:student.Instructor_Ins_ID,ALLOCATEDSECTION:student.Allocated_Section,PAY:student.Pay})
+            }
+            else
+            {      
+                console.log("kesa hai ye alam")
+            }
+        })
+    }
    // res.render('home',{Name:user.rows[0].FNAME,Phone:user.rows[0].PHONE,Email:user.rows[0].EMAIL})
 })
 
