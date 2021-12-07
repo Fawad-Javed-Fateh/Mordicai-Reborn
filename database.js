@@ -1,5 +1,6 @@
 
 const oracledb = require('oracledb');
+const namer=require('./tableName.js')
 
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
@@ -136,7 +137,6 @@ async function insertStudent(userName,pWord,email,phone) {
     }
   }
   async function getTeacherCourses(instructorID) {
-
     let connection;
   
     try {
@@ -191,8 +191,103 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
+
+  async function getTableData(tableName) {
+    console.log("chudmaa " + tableName)
+    tableName=namer.simpleSqlName(tableName)
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+  
+      const result = await connection.execute(
+        `select * from  `+ tableName
+        ,  // bind value for :id
+      );
+     // console.log(result);
+     var queryResult={names:[]};
+     for(var i=0;i<result.metaData.length;i++)
+     {
+          queryResult.names.push((result.metaData[i].name))
+     }
+     console.log(queryResult.names.length)
+     return queryResult
+    
+     
+  
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  async function insertTable(values,tableName) {
+    
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+    if(tableName=='Semester')
+    {
+      const result = await connection.execute(
+        `insert into  Semester values (:1,:2,TO_DATE(:3),:4) `  
+       ,[values.DURATION,values.NAME,values.START_DATE,values.SEMESTER_ID],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     
+     return result
+    }
+    if(tableName=='Courses')
+    {
+      const result = await connection.execute(
+        `insert into  courses values (:1,:2,:3,:4,:5) `  
+       ,[values.ID,values.CREDIT_HOURS,values.NAME,values.DEPARTMENTS_D_CODE,values.SEMESTER_SEMESTER_ID],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     
+     return result
+    }    
+      
+    
+     
+  
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
  
-  getTeacherCourses(827)
+  //getTeacherCourses(827)
+  //getTableData('Semester')
+
+  
+//insertTable(values,'Courses')
+
+
 //insertStudent('Spongebob','123')
 
 
@@ -200,5 +295,7 @@ module.exports={
     insertStudent,
     studentGetter,
     getTeacher,
-    getTeacherCourses
+    getTeacherCourses,
+    getTableData,
+    insertTable
 }
