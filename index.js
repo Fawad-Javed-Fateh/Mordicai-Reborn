@@ -59,6 +59,55 @@ app.get('/viewcourses',function(req,res){
     })
     
 })
+app.get('/addSemester',function(req,res){
+
+    db.getTableData('Semester').then(user=>{
+        
+        res.render('registerationforms',{tableTitle:"Semester",RESULT:user})
+
+    })
+    
+})
+app.get('/addCourse',function(req,res){
+    db.getTableData('courses').then(user=>{
+        
+        res.render('registerationforms',{tableTitle:"Courses",RESULT:user})
+
+    })
+})
+
+app.post('/Semester',function(req,res){
+    console.log('machu')
+})
+
+app.post('/InsertIntoSemester',function(req,res){
+        var values={
+             DURATION:req.body.DURATION,
+             NAME:req.body.NAME,
+             START_DATE:req.body.START_DATE,
+             SEMESTER_ID:req.body.SEMESTER_ID
+        }
+        db.insertTable(values,'Semester').then(user=>{
+        
+            res.render('welcome',{isAdmin:true,isTeacher:false})
+    
+        })
+})
+app.post('/InsertIntoCourses',function(req,res){
+    var values={
+         ID:req.body.ID,
+         CREDIT_HOURS:req.body.CREDIT_HOURS,
+         NAME:req.body.NAME,
+         DEPARTMENTS_D_CODE:req.body.DEPARTMENTS_D_CODE,
+         SEMESTER_SEMESTER_ID:req.body.SEMESTER_SEMESTER_ID
+    }
+     db.insertTable(values,'Courses').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+
 app.get('/attendence',function(req,res)
 {
     var marks={
@@ -121,6 +170,11 @@ app.post("/",function(req,res){
     var isTeacher=req.body.teacherCheckBox
     console.log(userName+" "+pWord)
     console.log(typeof(pWord))
+
+    if(userName=='Admin' && pWord==666)
+    {
+        res.render('welcome',{isAdmin:true,isTeacher:false})
+    }
     if(isTeacher)
     {
             
@@ -137,7 +191,7 @@ app.post("/",function(req,res){
                 instructor.Salary=user.rows[0].SALARY
                 instructor.Name=user.rows[0].NAME
                 instructor.Start_Date=user.rows[0].START_DATE
-                res.render('welcome',{isTeacher:isTeacher,NAME:instructor.Name,INS_ID:instructor.Ins_ID,ADDRESS:instructor.Address,START_DATE:instructor.Start_Date,EMAIL:instructor.Email})
+                res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:instructor.Name,INS_ID:instructor.Ins_ID,ADDRESS:instructor.Address,START_DATE:instructor.Start_Date,EMAIL:instructor.Email})
                 //res.render('welcome',{isTeacher:isTeacher,NAME:user.rows[0].NAME,BATCH:user.rows[0].BATCH,EMAIL:user.rows[0].EMAIL,ADDRESS:user.rows[0].ADDRESS,ID:user.rows[0].ID,INSTRUCTORS_ID:user.rows[0].INSTRUCTORS_INS_ID,ALLOCATEDSECTION:user.rows[0].SECTIONS_ID,PAY:user.rows[0].PAY})
             }
             else
@@ -163,7 +217,7 @@ app.post("/",function(req,res){
                 student.Pay=user.rows[0].PAY
                 student.Address=user.rows[0].ADDRESS
 
-                res.render('welcome',{isTeacher:isTeacher,NAME:student.Name,BATCH:student.Batch,EMAIL:student.Email,ADDRESS:student.Address,ID:student.ID,INSTRUCTORS_ID:student.Instructor_Ins_ID,ALLOCATEDSECTION:student.Allocated_Section,PAY:student.Pay})
+                res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:student.Name,BATCH:student.Batch,EMAIL:student.Email,ADDRESS:student.Address,ID:student.ID,INSTRUCTORS_ID:student.Instructor_Ins_ID,ALLOCATEDSECTION:student.Allocated_Section,PAY:student.Pay})
             }
             else
             {      
