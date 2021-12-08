@@ -280,12 +280,114 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
+
+  async function getCoursesWithSections(name,ins_id) {
+    
+    let connection;
+    var queryResult={
+      SECTION_ID:[]
+    }
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      const result = await connection.execute(
+        `select id from courses where name like  :1 `  
+       ,[name],
+       {autoCommit:true}  // bind value for :id
+      );
+      var temp=result.rows[0].ID
+      const res = await connection.execute(
+        `select section_id from teaches where courses_id=:1 and instructors_ins_id =:2 `  
+       ,[temp,ins_id],
+       {autoCommit:true}  // bind value for :id
+      );
+      for(var i=0;i<res.rows.length;i++)
+      {
+        queryResult.SECTION_ID.push(res.rows[i].SECTION_ID)
+      }
+      
+      console.log(queryResult)
+     
+     return queryResult
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
  
+
+  async function sectionsStudentRetreival(name,section_id) {
+    
+    let connection;
+    var queryResult={
+      STUDENT_ID:[],
+      ASS_QUIZZ:[],
+      MID_1:[],
+      MID_2:[],
+      FINAL:[],
+      GPA:[]
+    }
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      const result = await connection.execute(
+        `select id from courses where name like  :1 `  
+       ,[name],
+       {autoCommit:true}  // bind value for :id
+      );
+      var temp=result.rows[0].ID
+      const res = await connection.execute(
+        `select student_id,ASS_QUIZZ,mid1,mid2,final,gpa from takes where courses_id=:1 and sections_id =:2 `  
+       ,[temp,section_id],
+       {autoCommit:true}  // bind value for :id
+      );
+      console.log(res)
+      for(var i=0;i<res.rows.length;i++)
+      {
+        queryResult.STUDENT_ID.push(res.rows[i].STUDENT_ID)
+        queryResult.ASS_QUIZZ.push(res.rows[i].ASS_QUIZZ)
+        queryResult.MID_1.push(res.rows[i].MID_1)
+        queryResult.MID_2.push(res.rows[i].MID_2)
+        queryResult.FINAL.push(res.rows[i].FINAL)
+        queryResult.GPA.push(res.rows[i].GPA)
+      }
+      
+      console.log(queryResult)
+     
+     return queryResult
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
   //getTeacherCourses(827)
   //getTableData('Semester')
-
-  
+sectionsStudentRetreival('Programming 101','A')
+  //getCoursesWithSections('Programming 101',827)
 //insertTable(values,'Courses')
+
 
 
 //insertStudent('Spongebob','123')
@@ -296,6 +398,8 @@ module.exports={
     studentGetter,
     getTeacher,
     getTeacherCourses,
+    getCoursesWithSections,
     getTableData,
-    insertTable
+    insertTable,
+    sectionsStudentRetreival
 }
