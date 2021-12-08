@@ -18,7 +18,7 @@
     </head>
     <body>
         <!-- Navigation-->
-        <%- include('partials/navbarStudent.ejs')%>
+        <%- include('partials/navbarInstructor.ejs')%>
           <!-- Page Header-->
         <header class="masthead" style="background-image: url('assets/img/about-bg.jpg')">
             <div class="container position-relative px-4 px-lg-5">
@@ -35,40 +35,72 @@
         </header>
         <!-- Main Content-->
         <main class="mb-4">
-            
-            <form action="/grades" method="post" id="confirmGrade">
+            <%if(Checker==false) {%>
+            <form action="/displaygradingtable" method="post" id="confirmGrade">
                 <div class="grades-dropdowns">
-                
+                     <%if(sectionChecker == false){ %>   
                     <div class="semester-dropdown">
-                      <select name="semesterSelector"class="form-select" aria-label="Default select example">
-                          <option selected>Select Semester</option>
-                          <% for(var i=0;i<Semesters.length;i++) {%>
-                              <option value="<%=i%>"><%=Semesters[i]%></option>
+                      <select name="courseSelector"class="form-select" aria-label="Default select example">
+                          <option selected>Select Courses</option>
+                          <% for(var i=0;i<Courses.length;i++) {%>
+                              <option value="<%= Courses[i]%>"><%=Courses[i]%></option>
                           <%}%>
                         </select>
                     
                       </div>
-    
-                      <!-- <div class="courses-dropdown">
-                        <select class="form-select" aria-label="Default select example">
-                            <script>
-                                document.getElementById('semesterDropdown').addEventListener('change', function() {
-                                   var testSem= this.options[this.selectedIndex].value
-                                });
-                            </script>
-                            <option selected>Select Course</option>
-                            
-                          </select>
-                      </div> -->
+                      <%} else {%>
+                        <div class="semester-dropdown">
+                            <select name="sectionSelector"class="form-select" aria-label="Default select example">
+                                <option selected>Select Section</option>
+                                <% for(var i=0;i<Courses.length;i++) {%>
+                                    <option value="<%=Courses[i]%>"><%=Courses[i]%></option>
+                                <%}%>
+                              </select>
+                          
+                            </div>
+
+                        <%}%>
                 </div>
                 <div class="gradeSeperator">
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn btn-secondary" name='confirmButton' id='confirmButtonGrades'>Confirm</button>
                     </div>
                 </div>
-
-                
             </form>
+            <% } else {%>
+                <div class ="table-responsive">
+                    <table class="table table-hover table-dark">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Student Id</th>
+                            <th scope="col">Quizz/Assignemnts </th>
+                            <th scope="col">Mid1</th>
+                            <th scope="col">Mid2</th>
+                            <th scope="col">Finals</th>
+                            <th scope="col">sgpa</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <% for(var i=0;i<Courses.STUDENT_ID.length;i++){%>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td><%= Courses.STUDENT_ID[i]%></td>
+                            <td><%= Courses.ASS_QUIZZ[i]%></td>
+                            <td><%= Courses.MID_1[i]%></td>
+                            <td><%= Courses.MID_2[i]%></td>
+                            <td><%= Courses.FINAL[i]%></td>
+                            <td><%= Courses.GPA[i]%></td>
+                          </tr>
+                          <%}%>
+                          
+                        </tbody>
+                      </table>
+    
+    
+
+                </div>
+                            <% }%>
            
         </main>
         <!-- Footer-->

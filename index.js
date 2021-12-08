@@ -107,7 +107,57 @@ app.post('/InsertIntoCourses',function(req,res){
 
      })
 })
+var Checker=false
+var sectionChecker=false
+app.get('/addmarks',function(req,res){
+ 
+    if(Checker==false)
+    {
+        db.getTeacherCourses(instructor.Ins_ID).then(user=>{
+        
+            console.log('sdsadas')
+            console.log(user)
+            res.render('addgradeviewer',{Courses:user.CourseName,Checker:Checker,sectionChecker:sectionChecker})
+            
+            sectionChecker=true;
+        })
+    }   
+})
+var selectedCourse=""
+var selectedSection=""
+app.post('/displaygradingtable',function(req,res){
 
+    if(sectionChecker==true)
+    {
+        selectedCourse=req.body.courseSelector
+        console.log('yoloolo')
+        //console.log (selectedCourse)
+            db.getCoursesWithSections(selectedCourse,instructor.Ins_ID).then(user=>{
+                
+                console.log(user)
+                res.render('addgradeviewer',{Courses:user.SECTION_ID,sectionChecker:sectionChecker,Checker:Checker})
+                sectionChecker=false
+                Checker=true
+            })
+    }
+    else if(Checker==true){
+        selectedSection=req.body.sectionSelector
+        console.log(selectedCourse+' jello '+selectedSection)
+        db.sectionsStudentRetreival(selectedCourse,selectedSection).then(user=>{
+            res.render('addgradeviewer',{Courses:user,sectionChecker:sectionChecker,Checker:Checker})
+            Checker=false
+        })
+        // db.getTeacherCourses(instructor.Ins_ID).then(user=>{
+        
+        //     selectedSection=req.body.courseSelector
+        //     console.log('sdsadas')
+        //     console.log(user)
+        //     res.render('addgradeviewer',{Courses:user.CourseName,sectionChecker:sectionChecker,Checker:Checker})
+        //     Checker=false
+        // })
+    }
+  
+})
 app.get('/attendence',function(req,res)
 {
     var marks={
