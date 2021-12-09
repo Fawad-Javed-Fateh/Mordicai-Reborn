@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 
 var userName
 var gradeChoiceChecker=0;
+var isTeacher;
 
 var student ={
    Name:"",
@@ -165,11 +166,11 @@ app.post('/displaygradingtable',function(req,res){
 })
 app.post('/acceptinserttable',function(req,res){
     console.log('maa keesdsdsd')
-    for(var i=0;i<userLength;i++)
-    {
-        console.log('asdasd')
-        console.log(req.body )
-    }
+    db.insertGradesInTable(req.body,selectedCourse,selectedSection).then(user=>{
+        console.log('prehaps this worked')
+        res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:instructor.Name,INS_ID:instructor.Ins_ID,ADDRESS:instructor.Address,START_DATE:instructor.Start_Date,EMAIL:instructor.Email})
+        
+    })
 })
 app.get('/attendence',function(req,res)
 {
@@ -226,11 +227,11 @@ app.post("/register.html",function(req,res){
     }
 
 })
-
+ 
 app.post("/",function(req,res){
     userName=req.body.userName
     var pWord=req.body.pWord
-    var isTeacher=req.body.teacherCheckBox
+     isTeacher=req.body.teacherCheckBox
     console.log(userName+" "+pWord)
     console.log(typeof(pWord))
 

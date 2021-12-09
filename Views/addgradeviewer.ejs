@@ -87,7 +87,7 @@
                                 <tbody>
                                     <<% for(var i=0;i<Courses.STUDENT_ID.length;i++){%>
                                     <tr id='addr0' name=<%=i%>>
-                                        <td>1</td>
+                                        <td><%=i+1%></td>
                                         <td>
                                         <input type="text" name='STUDENT_ID'  value='<%= Courses.STUDENT_ID[i]%>' class="form-control"/>
                                         </td>
