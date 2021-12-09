@@ -361,8 +361,8 @@ async function insertStudent(userName,pWord,email,phone) {
       {
         queryResult.STUDENT_ID.push(res.rows[i].STUDENT_ID)
         queryResult.ASS_QUIZZ.push(res.rows[i].ASS_QUIZZ)
-        queryResult.MID_1.push(res.rows[i].MID_1)
-        queryResult.MID_2.push(res.rows[i].MID_2)
+        queryResult.MID_1.push(res.rows[i].MID1)
+        queryResult.MID_2.push(res.rows[i].MID2)
         queryResult.FINAL.push(res.rows[i].FINAL)
         queryResult.GPA.push(res.rows[i].GPA)
       }
@@ -382,9 +382,78 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
+  async function insertGradesInTable(enteries,selectedCourse,selectedSection) {
+    console.log('wimppppp')
+  enteries=typeConverter(enteries)
+  console.log(enteries.MID_1[0])
+    console.log(enteries)
+    console.log(selectedCourse)
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      var res=await connection.execute(
+        'select id from courses where name like :1'
+        ,{1:selectedCourse},
+      )
+      console.log('asdas' + res.rows[0].ID)
+      var course_ID=res.rows[0].ID
+      
+       for(var i=0;i<enteries.STUDENT_ID.length;i++)
+       {
+        var mid1=enteries.MID_1[i]
+        var mid2=enteries.MID_2[i]
+        var studentId=enteries.STUDENT_ID[i]
+        var final=enteries.FINAL[i]
+        var ass_quizz=enteries.ASS_QUIZZ[i]
+        var gpa=enteries.SGPA[i]
+         var result = await connection.execute(
+          //  `update takes set MID1=:2,MID2=:3,ASS_QUIZZ=:4,FINAL=:5,GPA=:6 where STUDENT_ID=:7 and COURSES_ID=:8 and SECTIONS_ID=:9 `  
+          // ,{2:enteries.MID_1[i],3:enteries.MID_2[i],4:enteries.ASS_QUIZZ[i],5:enteries.FINAL[i],6:enteries.GPA[i],7:enteries.STUDENT_ID[i],8:course_ID,9:selectedSection },
+          // {autoCommit:true}  // bind value for :id
+           
+          'update  takes set MID1=:1,MID2=:2,final=:4,gpa=:5,ass_quizz=:6  where student_id=:3 and courses_id=:7 and sections_id=:8'
+          ,[mid1,mid2,final,gpa,ass_quizz,studentId,course_ID,selectedSection],{autoCommit:true}
+         );
+       } 
+      
+      console.log(result)
+     return 
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  function typeConverter(enteries)
+  {
+    for(var i=0;i<enteries.STUDENT_ID.length;i++)
+    {
+      enteries.STUDENT_ID[i]=parseInt(enteries.STUDENT_ID[i])
+      enteries.ASS_QUIZZ[i]=parseFloat(enteries.ASS_QUIZZ[i])
+      enteries.MID_1[i]=parseFloat(enteries.MID_1[i])
+      enteries.MID_2[i]=parseFloat(enteries.MID_2[i])
+      enteries.FINAL[i]=parseFloat(enteries.FINAL[i])
+      enteries.SGPA[i]=parseFloat(enteries.SGPA[i])
+    }
+    return enteries
+  }
+  //enteries=typeConverter(enteries)
+  
+ //insertGradesInTable(enteries,'Programming 101','A')
   //getTeacherCourses(827)
   //getTableData('Semester')
-sectionsStudentRetreival('Programming 101','A')
+//sectionsStudentRetreival('Programming 101','A')
   //getCoursesWithSections('Programming 101',827)
 //insertTable(values,'Courses')
 
@@ -401,5 +470,6 @@ module.exports={
     getCoursesWithSections,
     getTableData,
     insertTable,
-    sectionsStudentRetreival
+    sectionsStudentRetreival,
+    insertGradesInTable
 }
