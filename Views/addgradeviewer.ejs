@@ -68,37 +68,55 @@
                 </div>
             </form>
             <% } else {%>
-                <div class ="table-responsive">
-                    <table class="table table-hover table-dark">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Student Id</th>
-                            <th scope="col">Quizz/Assignemnts </th>
-                            <th scope="col">Mid1</th>
-                            <th scope="col">Mid2</th>
-                            <th scope="col">Finals</th>
-                            <th scope="col">sgpa</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            <% for(var i=0;i<Courses.STUDENT_ID.length;i++){%>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td><%= Courses.STUDENT_ID[i]%></td>
-                            <td><%= Courses.ASS_QUIZZ[i]%></td>
-                            <td><%= Courses.MID_1[i]%></td>
-                            <td><%= Courses.MID_2[i]%></td>
-                            <td><%= Courses.FINAL[i]%></td>
-                            <td><%= Courses.GPA[i]%></td>
-                          </tr>
-                          <%}%>
-                          
-                        </tbody>
-                      </table>
-    
-    
-
+                <div class="container">
+                    <form action='/acceptinserttable' method='post'>
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <div class='table-responsive'>
+                            <table class="table table-bordered table-hover table-dark table-responsive" id="tab_logic">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Student Id</th>
+                                        <th scope="col">Quizz/Assignemnts </th>
+                                        <th scope="col">Mid1</th>
+                                        <th scope="col">Mid2</th>
+                                        <th scope="col">Finals</th>
+                                        <th scope="col">sgpa</th>
+                                </thead>
+                                <tbody>
+                                    <<% for(var i=0;i<Courses.STUDENT_ID.length;i++){%>
+                                    <tr id='addr0' name=<%=i%>>
+                                        <td>1</td>
+                                        <td>
+                                        <input type="text" name='STUDENT_ID'  value='<%= Courses.STUDENT_ID[i]%>' class="form-control"/>
+                                        </td>
+                                        <td>
+                                        <input type="text" name='ASS_QUIZZ' value='<%= Courses.ASS_QUIZZ[i]%>' class="form-control"/>
+                                        </td>
+                                        <td>
+                                        <input type="text" name='MID_1' value='<%= Courses.MID_1[i]%>' class="form-control"/>
+                                        </td>
+                                        <td>
+                                        <input type="text" name='MID_2' value='<%= Courses.MID_2[i]%>' class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name='FINAL' value='<%= Courses.FINAL[i]%>' class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name='SGPA' value='<%= Courses.GPA[i]%>' class="form-control"/>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <button id="add_row" class="btn btn-default pull-left btn-dark" type='submit'>Submit</button>
+                    </form>
+                    
                 </div>
                             <% }%>
            

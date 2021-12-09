@@ -125,6 +125,7 @@ app.get('/addmarks',function(req,res){
 })
 var selectedCourse=""
 var selectedSection=""
+var userLength=0
 app.post('/displaygradingtable',function(req,res){
 
     if(sectionChecker==true)
@@ -141,10 +142,14 @@ app.post('/displaygradingtable',function(req,res){
             })
     }
     else if(Checker==true){
+        
         selectedSection=req.body.sectionSelector
         console.log(selectedCourse+' jello '+selectedSection)
         db.sectionsStudentRetreival(selectedCourse,selectedSection).then(user=>{
+
             res.render('addgradeviewer',{Courses:user,sectionChecker:sectionChecker,Checker:Checker})
+            userLength=user.STUDENT_ID.length
+            //res.render('b',{Courses:user})
             Checker=false
         })
         // db.getTeacherCourses(instructor.Ins_ID).then(user=>{
@@ -157,6 +162,14 @@ app.post('/displaygradingtable',function(req,res){
         // })
     }
   
+})
+app.post('/acceptinserttable',function(req,res){
+    console.log('maa keesdsdsd')
+    for(var i=0;i<userLength;i++)
+    {
+        console.log('asdasd')
+        console.log(req.body )
+    }
 })
 app.get('/attendence',function(req,res)
 {
