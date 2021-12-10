@@ -264,7 +264,61 @@ async function insertStudent(userName,pWord,email,phone) {
      
      return result
     }    
-      
+    if(tableName=='Instructors')
+    {
+      const result = await connection.execute(
+        `insert into  instructors values (:1,:2,:3,:4,:5,:6,:7,:8) `  
+       ,[values.NAME,values.INS_ID,values.START_DATE,values.SALARY,values.ADDRESS,values.EMAIL,values.DEPARTMENTS_D_CODE,values.DESIGNATION],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     return result
+    }    
+    if(tableName=='SECTIONS')
+    {
+      const result = await connection.execute(
+        `insert into  sections values (:1,:2,:3) `  
+       ,[values.ID,values.CR_NAME,values.COURSES_ID],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     
+     return result
+    }   
+    if(tableName=='STUDENT')
+    {
+      const result = await connection.execute(
+        `insert into  student values (:1,:2,:3,:4,:5,:6,:7) `  
+       ,[values.NAME,values.BATCH,values.ID,values.ADDRESS,values.EMAIL,values.INSTRUCTOS_INS_ID,values.PAY],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     
+     return result
+    }     
+    if(tableName=='TAKES')
+    {
+      const result = await connection.execute(
+        `insert into  TAKES values (:1,:2,:3,:4,:5,:6,:7,:8) `  
+       ,[values.STUDENT_ID,values.COURSES_ID,values.GPA,values.MID1,values.MID2,values.FINAL,values.ASS_QUIZZ,values.SECTIONS_ID],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     
+     return result
+    }    
+    if(tableName=='TEACHES')
+    {
+      const result = await connection.execute(
+        `insert into  TEACHES values (:1,:2,:3,:4,:5) `  
+       ,[values.INSTRUCTOS_INS_ID,values.COURSES_ID,values.SECTION_ID],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     
+     return result
+    }    
+
     
      
   
