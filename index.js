@@ -1,4 +1,4 @@
-
+const fs=require('fs')
 const express=require('express')
 const bodyParser=require('body-parser')
 const db=require('./database.js')
@@ -14,6 +14,13 @@ app.use(bodyParser.urlencoded({extended:true}))
 var userName
 var gradeChoiceChecker=0;
 var isTeacher;
+var currRunningSem=''
+fs.readFile(__dirname+'/currsem.txt', 'utf-8',function (err, data) {
+    if (err) throw err;
+
+currRunningSem=data
+});
+console.log(currRunningSem)
 
 var student ={
    Name:"",
@@ -192,9 +199,9 @@ app.post("/grades",function(req,res){
         var semester=req.body.semesterSelector
         console.log(semester)
         console.log(semester)
-        var semesters=['Fall 2021','Spring 2021','Summer 2021']
-        var courses=['PF','AP','CAL']
-        res.render('grades',{Semesters:courses})
+        db.getStudentEnrolledCourses(student.ID).then(user=>{
+            res.render('grades',{Semesters:user})
+        })
     }
     else if(gradeChoiceChecker==2){
         var course=req.body.semesterSelector

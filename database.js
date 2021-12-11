@@ -348,15 +348,15 @@ async function insertStudent(userName,pWord,email,phone) {
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
-      const result = await connection.execute(
-        `select id from courses where name like  :1 `  
-       ,[name],
-       {autoCommit:true}  // bind value for :id
-      );
-      var temp=result.rows[0].ID
+      // const result = await connection.execute(
+      //   `select id from courses where name like  :1 `  
+      //  ,[name],
+      //  {autoCommit:true}  // bind value for :id
+      // );
+     // var temp=result.rows[0].ID
       const res = await connection.execute(
-        `select section_id from teaches where courses_id=:1 and instructors_ins_id =:2 `  
-       ,[temp,ins_id],
+        `select t.section_id from teaches t,courses c where c.id=t.courses_id and c.name=:1 and t.instructors_ins_id =:2 `  
+       ,[name,ins_id],
        {autoCommit:true}  // bind value for :id
       );
       for(var i=0;i<res.rows.length;i++)
@@ -399,15 +399,15 @@ async function insertStudent(userName,pWord,email,phone) {
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
-      const result = await connection.execute(
-        `select id from courses where name like  :1 `  
-       ,[name],
-       {autoCommit:true}  // bind value for :id
-      );
-      var temp=result.rows[0].ID
+      // const result = await connection.execute(
+      //   `select id from courses where name like  :1 `  
+      //  ,[name],
+      //  {autoCommit:true}  // bind value for :id
+      // );
+      // var temp=result.rows[0].ID
       const res = await connection.execute(
-        `select student_id,ASS_QUIZZ,mid1,mid2,final,gpa from takes where courses_id=:1 and sections_id =:2 `  
-       ,[temp,section_id],
+        `select t.student_id,t.ASS_QUIZZ,t.mid1,t.mid2,t.final,t.gpa from takes t,courses c where c.id=t.courses_id and c.name LIKE :1 and t.sections_id LIKE :2 `  
+       ,[name,section_id],
        {autoCommit:true}  // bind value for :id
       );
       console.log(res)
@@ -488,6 +488,39 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
+  async function getStudentEnrolledCourses(std_id) {
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      var res=await connection.execute(
+        'select c.name from courses c,takes t where t.courses_id=c.id and t.student_id =:1'
+        ,{1:std_id},
+      )
+      var queryResult=[]
+      for(var i=0;i<res.rows.length;i++)
+      {
+        queryResult.push(res.rows[0].NAME)
+      }
+      console.log(queryResult)
+      return queryResult
+     return 
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
 
   function typeConverter(enteries)
   {
@@ -507,10 +540,10 @@ async function insertStudent(userName,pWord,email,phone) {
  //insertGradesInTable(enteries,'Programming 101','A')
   //getTeacherCourses(827)
   //getTableData('Semester')
-//sectionsStudentRetreival('Programming 101','A')
+//sectionsStudentRetreival("Programming 101",'A')
   //getCoursesWithSections('Programming 101',827)
 //insertTable(values,'Courses')
-
+//getStudentEnrolledCourses(8972)
 
 
 //insertStudent('Spongebob','123')
@@ -525,5 +558,6 @@ module.exports={
     getTableData,
     insertTable,
     sectionsStudentRetreival,
-    insertGradesInTable
+    insertGradesInTable,
+    getStudentEnrolledCourses
 }
