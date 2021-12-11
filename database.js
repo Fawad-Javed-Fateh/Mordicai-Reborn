@@ -520,7 +520,75 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
-
+  async function coursesInGivenSem(sem_name,studentID) {
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      var res=await connection.execute(
+        'select * from courses c,departments d,semester s  where  c.semester_semester_id=s.semester_id and d.d_code=c.departments_d_code and s.name =:1 and c.id not in  (select courses_id from takes where student_id=:2)'
+        ,{1:sem_name,2:studentID},
+      )
+      var queryResult={
+        C_NAME:[],
+        C_ID:[],
+        D_NAME:[],
+        CREDIT_HOURS:[]
+      }
+      for(var i=0;i<res.rows.length;i++)
+      {
+        queryResult.C_NAME.push(res.rows[i].NAME)
+        queryResult.C_ID.push(res.rows[i].ID)
+        queryResult.D_NAME.push(res.rows[i].D_NAME)
+        queryResult.CREDIT_HOURS.push(res.rows[i].CREDIT_HOURS)
+        
+      }
+      console.log(queryResult)
+      return queryResult
+     return 
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+  async function insertCourseInStudent(courseID,studentID,section) {
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      var temp=0
+      var res=await connection.execute(
+        'insert into takes values(:1,:2,:3,:4,:5,:6,:7,:8)'
+        ,{1:studentID,2:courseID,3:temp,4:temp,5:temp,6:temp,7:temp,8:section},{autoCommit:true}
+      )
+      
+      return res
+     return 
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
 
   function typeConverter(enteries)
   {
@@ -544,6 +612,7 @@ async function insertStudent(userName,pWord,email,phone) {
   //getCoursesWithSections('Programming 101',827)
 //insertTable(values,'Courses')
 //getStudentEnrolledCourses(8972)
+//coursesInGivenSem('Fall 2019',8972)
 
 
 //insertStudent('Spongebob','123')
@@ -559,5 +628,7 @@ module.exports={
     insertTable,
     sectionsStudentRetreival,
     insertGradesInTable,
-    getStudentEnrolledCourses
+    getStudentEnrolledCourses,
+    coursesInGivenSem,
+    insertCourseInStudent
 }

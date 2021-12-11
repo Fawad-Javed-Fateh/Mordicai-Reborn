@@ -11269,3 +11269,10 @@ header.masthead .site-heading .h1 {
 .gradeSeperator{
   padding-top: 10%;
 }
+.header {
+  padding: 60px;
+  text-align: center;
+  background: black;
+  color: white;
+  font-size: 30px;
+}

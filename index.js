@@ -3,6 +3,7 @@ const express=require('express')
 const bodyParser=require('body-parser')
 const db=require('./database.js')
 const ejs=require('ejs')
+const res = require('express/lib/response')
 const linkVarCatcher=('./buttonchanges.js')
 
 
@@ -60,6 +61,25 @@ app.get('/home',function(req,res)
 
 })
 app.get('/grades')
+app.get('/ChooseCourses',function(req,res){
+    db.coursesInGivenSem(currRunningSem,student.ID).then(user=>{
+        res.render('studentchoosecourse',{currSem:currRunningSem,Courses:user})    
+    })
+    
+})
+app.post('/acceptinsertstudentcourse',function(req,res){
+    
+    console.log(req.body.checked.length)
+    var checked=req.body.checked
+    for(var i=0;i<checked.length;i++)
+    {
+        db.insertCourseInStudent(checked[i],student.ID,'A').then(user=>{
+            console.log('successfulyy inserted course ')
+        })
+    }
+    res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:student.Name,BATCH:student.Batch,EMAIL:student.Email,ADDRESS:student.Address,ID:student.ID,INSTRUCTORS_ID:student.Instructor_Ins_ID,ALLOCATEDSECTION:student.Allocated_Section,PAY:student.Pay})
+})
+
 app.get('/viewcourses',function(req,res){
     db.getTeacherCourses(instructor.Ins_ID).then(user=>{
         console.log(user)
