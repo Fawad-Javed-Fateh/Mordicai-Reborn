@@ -50,3 +50,6 @@
 	</form>
 	
 </div>
+db.getStudentEnrolledCourses(student.ID).then(user=>{
+	res.render('grades',{Semesters:user})
+})
