@@ -603,6 +603,100 @@ async function insertStudent(userName,pWord,email,phone) {
     }
     return enteries
   }
+  async function getNonTAStudents(courseName,section_id) {
+    
+    let connection;
+    var queryResult={
+      STUDENT_ID:[],
+      NAME:[],
+      EMAIL:[]
+    }
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      // const result = await connection.execute(
+      //   `select id from courses where name like  :1 `  
+      //  ,[name],
+      //  {autoCommit:true}  // bind value for :id
+      // );
+      // var temp=result.rows[0].ID
+      const res = await connection.execute(
+        'select DISTINCT s.NAME,s.ID,s.email from student s,takes t,courses c  where s.ID=t.student_ID and t.courses_id=c.id and c.name <>:1  and s.instructors_ins_id is null'
+       ,[courseName],
+       {autoCommit:true}  // bind value for :id
+      );
+      console.log(res)
+      for(var i=0;i<res.rows.length;i++)
+      {
+        queryResult.STUDENT_ID.push(res.rows[i].ID)
+        queryResult.EMAIL.push(res.rows[i].EMAIL)
+        queryResult.NAME.push(res.rows[i].NAME)
+
+      }
+      
+      console.log(queryResult)
+     
+     return queryResult
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+  async function assignStudentAsTA(studentID,instructorID,pay) {
+    
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      // const result = await connection.execute(
+      //   `select id from courses where name like  :1 `  
+      //  ,[name],
+      //  {autoCommit:true}  // bind value for :id
+      // );
+      // var temp=result.rows[0].ID
+      const res = await connection.execute(
+        'update student set instructor_ins_id=:1 and pay=:2 where id=:3'
+       ,[instructorID,pay,studentID],
+       {autoCommit:true}  // bind value for :id
+      );
+      console.log(res)
+      for(var i=0;i<res.rows.length;i++)
+      {
+        queryResult.STUDENT_ID.push(res.rows[i].ID)
+        queryResult.EMAIL.push(res.rows[i].EMAIL)
+        queryResult.NAME.push(res.rows[i].NAME)
+
+      }
+      
+      console.log(queryResult)
+     
+     return queryResult
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
   //enteries=typeConverter(enteries)
   
  //insertGradesInTable(enteries,'Programming 101','A')
@@ -613,6 +707,7 @@ async function insertStudent(userName,pWord,email,phone) {
 //insertTable(values,'Courses')
 //getStudentEnrolledCourses(8972)
 //coursesInGivenSem('Fall 2019',8972)
+getNonTAStudents('Programming 101','A')
 
 
 //insertStudent('Spongebob','123')
@@ -630,5 +725,7 @@ module.exports={
     insertGradesInTable,
     getStudentEnrolledCourses,
     coursesInGivenSem,
-    insertCourseInStudent
+    insertCourseInStudent,
+    getNonTAStudents,
+    assignStudentAsTA
 }

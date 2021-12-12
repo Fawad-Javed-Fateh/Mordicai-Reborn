@@ -79,6 +79,10 @@ app.post('/acceptinsertstudentcourse',function(req,res){
     }
     res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:student.Name,BATCH:student.Batch,EMAIL:student.Email,ADDRESS:student.Address,ID:student.ID,INSTRUCTORS_ID:student.Instructor_Ins_ID,ALLOCATEDSECTION:student.Allocated_Section,PAY:student.Pay})
 })
+app.post('/acceptassignedTA',function(req,res){
+    console.log(req.body.checked.length)
+    var checked=req.body.checked
+})
 
 app.get('/viewcourses',function(req,res){
     db.getTeacherCourses(instructor.Ins_ID).then(user=>{
@@ -137,6 +141,20 @@ app.post('/InsertIntoCourses',function(req,res){
 })
 var Checker=false
 var sectionChecker=false
+app.get('/addta',function(req,res){
+    console.log('dry')
+    if(Checker==false)
+    {
+        db.getTeacherCourses(instructor.Ins_ID).then(user=>{
+        
+            console.log('sdsadas')
+            console.log(user)
+            res.render('addta',{Courses:user.CourseName,Checker:Checker,sectionChecker:sectionChecker})
+            
+            sectionChecker=true;
+        })
+    } 
+})
 app.get('/addmarks',function(req,res){
  
     if(Checker==false)
@@ -154,6 +172,34 @@ app.get('/addmarks',function(req,res){
 var selectedCourse=""
 var selectedSection=""
 var userLength=0
+app.post('/displaystudentlist',function(req,res){
+    if(sectionChecker==true)
+    {
+        selectedCourse=req.body.courseSelector
+        console.log('yoloolo')
+        //console.log (selectedCourse)
+            db.getCoursesWithSections(selectedCourse,instructor.Ins_ID).then(user=>{
+                
+                console.log(user)
+                res.render('addta',{Courses:user.SECTION_ID,sectionChecker:sectionChecker,Checker:Checker})
+                sectionChecker=false
+                Checker=true
+            })
+    }
+    else if(Checker==true){
+        
+        selectedSection=req.body.sectionSelector
+        console.log(selectedCourse+' jello '+selectedSection)
+        db.getNonTAStudents(selectedCourse,selectedSection).then(user=>{
+
+            res.render('addta',{Courses:user,sectionChecker:sectionChecker,Checker:Checker})
+            userLength=user.STUDENT_ID.length
+            //res.render('b',{Courses:user})
+            Checker=false
+        })
+         
+    }
+})
 app.post('/displaygradingtable',function(req,res){
 
     if(sectionChecker==true)
