@@ -18,14 +18,15 @@
     </head>
     <body>
         <!-- Navigation-->
-        <%- include('partials/navbarStudent.ejs')%>
+        <%- include('partials/navbarAdmin.ejs')%>
           <!-- Page Header-->
         <header class="masthead" style="background-image: url('assets/img/about-bg.jpg')">
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="page-heading">
-                            <h1>Semester Grades</h1>
+                            <h1>Add data in table</h1>
+                            
                             <span class="subheading">Yeah you should have worked hard definitely. But upgrading ftw </span>
                         </div>
                     </div>
@@ -34,41 +35,45 @@
         </header>
         <!-- Main Content-->
         <main class="mb-4">
-            
-            <table class="table table-dark table-bordered table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Assignments/quizz</th>
-                    <th scope="col">Mid1</th>
-                    <th scope="col">Mid2</th>
-                    <th scope="col">Final</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">Obtained</th>
-                    <td><%=marks.ASS_QUIZZ%></td>
-                    <td><%=marks.MID1%></td>
-                    <td><%=marks.MID2%></td>
-                    <td><%=marks.FINALS%></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Total</th>
-                    <td>15</td>
-                    <td>15</td>
-                    <td>15</td>
-                    <td>50</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">%</th>
-                    <td><%= ((marks.ASS_QUIZZ/15) *100).toFixed(2)%></td>
-                    <td><%= ((marks.MID1/15) *100).toFixed(2)%></td>
-                    <td><%= ((marks.MID2/75) *100).toFixed(2)%></td>
-                    <td><%= ((marks.FINALS/75) *100).toFixed(2)%></td>
-                  </tr>
-                </tbody>
-              </table>
+            <%if(tableChecker==false){%>
+            <form action="/addintable" method="post" id="confirmGrade">
+                <div class="grades-dropdowns">
+                
+                    <div class="semester-dropdown">
+                      <select name="tableSelector"class="form-select" aria-label="Default select example">
+                          <option selected>Select Table</option>
+                          <% for(var i=0;i<Tables.length;i++) {%>
+                              <option value="<%=Tables[i]%>"><%=Tables[i]%></option>
+                          <%}%>
+                        </select>
+                    
+                      </div>
+                      <%} else {%>
+
+
+                        <%}%>
+    
+                      <!-- <div class="courses-dropdown">
+                        <select class="form-select" aria-label="Default select example">
+                            <script>
+                                document.getElementById('semesterDropdown').addEventListener('change', function() {
+                                   var testSem= this.options[this.selectedIndex].value
+                                });
+                            </script>
+                            <option selected>Select Course</option>
+                            
+                          </select>
+                      </div> -->
+                </div>
+                <div class="gradeSeperator">
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-secondary" name='confirmButton' id='confirmButtonGrades'>Confirm</button>
+                    </div>
+                </div>
+
+                
+            </form>
+           
         </main>
         <!-- Footer-->
         <%-include('partials/footer.ejs')%>
