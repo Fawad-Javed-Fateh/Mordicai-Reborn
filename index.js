@@ -107,6 +107,35 @@ app.get('/addCourse',function(req,res){
 
     })
 })
+app.get('/addInstructor',function(req,res){
+    db.getTableData('Instructors').then(user=>{
+        
+        res.render('registerationforms',{tableTitle:"Instructors",RESULT:user})
+
+    })
+})
+var tableChecker=false
+app.get('/addintable',function(req,res){
+    if(tableChecker==false)
+    {
+        var Tables=['ALLOTED','COURSES','DEPARTMENTS','ENROLLED_IN','INSTRUCTORS','SECTONS','SEMESTER','STUDENT','TAKES','TEACHES']
+        res.render('addintable',{Tables:Tables,tableChecker:tableChecker})
+        tableChecker=true
+    }
+})
+app.post('/addintable',function(req,res){
+    if(tableChecker==true)
+    {
+        var table=req.body.tableSelector
+        db.getTableData('Instructors').then(user=>{
+        
+            res.render('registerationforms',{tableTitle:table,RESULT:user})
+            tableChecker=true
+    
+        })
+
+    }
+})
 
 app.post('/Semester',function(req,res){
     console.log('machu')
@@ -266,19 +295,20 @@ app.post("/grades",function(req,res){
         console.log(semester)
         console.log(semester)
         db.getStudentEnrolledCourses(student.ID).then(user=>{
+            console.log('asdasda')
+            console.log(user)
             res.render('grades',{Semesters:user})
         })
     }
     else if(gradeChoiceChecker==2){
         var course=req.body.semesterSelector
         console.log(course)
-        var marks={
-            mid1:7,
-            mid2:8,
-            finals:55
-        }
+       db.getStudentMarksinCourse(student.ID,course).then(user=>{
+           console.log(user)
+        res.render('viewgrades',{marks:user})
+       })
         gradeChoiceChecker=0;
-        res.render('viewgrades',{marks:marks})
+        
     }
 
 })
@@ -299,6 +329,12 @@ app.post("/register.html",function(req,res){
         res.redirect('/')
     }
 
+})
+app.get('/welcomestudent',function(req,res){
+    res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:student.Name,BATCH:student.Batch,EMAIL:student.Email,ADDRESS:student.Address,ID:student.ID,INSTRUCTORS_ID:student.Instructor_Ins_ID,ALLOCATEDSECTION:student.Allocated_Section,PAY:student.Pay})
+})
+app.get('/welcometeacher',function(req,res){
+    res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:instructor.Name,INS_ID:instructor.Ins_ID,ADDRESS:instructor.Address,START_DATE:instructor.Start_Date,EMAIL:instructor.Email})
 })
  
 app.post("/",function(req,res){

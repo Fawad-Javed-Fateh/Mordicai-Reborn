@@ -1,4 +1,5 @@
 
+const { query } = require('express');
 const oracledb = require('oracledb');
 const namer=require('./tableName.js')
 
@@ -193,7 +194,7 @@ async function insertStudent(userName,pWord,email,phone) {
   }
 
   async function getTableData(tableName) {
-    console.log("chudmaa " + tableName)
+
     tableName=namer.simpleSqlName(tableName)
     let connection;
   
@@ -503,7 +504,7 @@ async function insertStudent(userName,pWord,email,phone) {
       var queryResult=[]
       for(var i=0;i<res.rows.length;i++)
       {
-        queryResult.push(res.rows[0].NAME)
+        queryResult.push(res.rows[i].NAME)
       }
       console.log(queryResult)
       return queryResult
@@ -674,13 +675,47 @@ async function insertStudent(userName,pWord,email,phone) {
        {autoCommit:true}  // bind value for :id
       );
       console.log(res)
-      for(var i=0;i<res.rows.length;i++)
-      {
-        queryResult.STUDENT_ID.push(res.rows[i].ID)
-        queryResult.EMAIL.push(res.rows[i].EMAIL)
-        queryResult.NAME.push(res.rows[i].NAME)
-
+      
+      console.log(queryResult)
+     
+     return queryResult
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
       }
+    }
+  }
+  async function getStudentMarksinCourse(studentID,courseName) {
+    
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "Mordicai",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      const res = await connection.execute(
+        'select t.ass_quizz,t.mid1,t.mid2,t.final from courses c,takes t where t.courses_id=c.id and t.student_id=:1 and c.name=:2'
+       ,[studentID,courseName],
+       {autoCommit:true}  // bind value for :id
+      );
+      console.log(res)
+      var queryResult={
+        MID1:0,
+        MID2:0,
+        FINALS:0,
+        ASS_QUIZZ:0        
+      }
+      queryResult.MID1=res.rows[0].MID1
+      queryResult.MID2=res.rows[0].MID2
+      queryResult.FINALS=res.rows[0].FINAL
+      queryResult.ASS_QUIZZ=res.rows[0].ASS_QUIZZ
       
       console.log(queryResult)
      
@@ -707,7 +742,8 @@ async function insertStudent(userName,pWord,email,phone) {
 //insertTable(values,'Courses')
 //getStudentEnrolledCourses(8972)
 //coursesInGivenSem('Fall 2019',8972)
-getNonTAStudents('Programming 101','A')
+//getNonTAStudents('Programming 101','A')
+getStudentMarksinCourse(8972,'Programming 101')
 
 
 //insertStudent('Spongebob','123')
@@ -727,5 +763,6 @@ module.exports={
     coursesInGivenSem,
     insertCourseInStudent,
     getNonTAStudents,
-    assignStudentAsTA
+    assignStudentAsTA,
+    getStudentMarksinCourse
 }
