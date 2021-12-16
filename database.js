@@ -8,7 +8,7 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 
 async function getStudent(userName,pWord) {
-  console.log("chudmaa " + pWord)
+  console.log("getStudent " + pWord)
   let connection;
 
   try {
@@ -23,7 +23,7 @@ async function getStudent(userName,pWord) {
        ,[pWord],  // bind value for :id
     );
    // console.log(result);
-   console.log("chudmaa " + pWord)
+   console.log("getStudent " + pWord)
    console.log('result is = '+ result.rows)
     return result
    
@@ -148,7 +148,7 @@ async function insertStudent(userName,pWord,email,phone) {
       });
   
       const result = await connection.execute(
-        `Select section_id,courses_id from teaches where  Instructors_Ins_ID = :1  `
+        `Select section_id,courses_id,SEMESTER_SEMESTER_ID from INSTRUCTOR_TEACHES_COURSE where  Instructors_Ins_ID = :1  `
          ,[instructorID],  // bind value for :id
             {autoCommit:true}
          );
@@ -158,12 +158,14 @@ async function insertStudent(userName,pWord,email,phone) {
            CourseID:[],
            Departments_D_CODE:[],
            CreditHours:[],
+           SemesterID: [],
           
          }
          for(var i=0;i<result.rows.length;i++)
          {
               queryReuslt.CourseID.push(result.rows[i].COURSES_ID)
               queryReuslt.Section.push(result.rows[i].SECTION_ID)
+              queryReuslt.SemesterID.push(result.rows[i].SEMESTER_SEMESTER_ID)
          }
          for(var i=0;i<result.rows.length;i++)
          {
@@ -192,7 +194,6 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
-
   async function getTableData(tableName) {
 
     tableName=namer.simpleSqlName(tableName)
@@ -232,7 +233,6 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
-
   async function insertTable(values,tableName) {
     
     let connection;
@@ -246,7 +246,7 @@ async function insertStudent(userName,pWord,email,phone) {
     if(tableName=='Semester')
     {
       const result = await connection.execute(
-        `insert into  Semester values (:1,:2,TO_DATE(:3),:4) `  
+        `insert into  Semester values (:1,:2,TO_DATE(:3,'DD/MM/YYYY'),:4) `  
        ,[values.DURATION,values.NAME,values.START_DATE,values.SEMESTER_ID],
        {autoCommit:true}  // bind value for :id
       );
@@ -278,8 +278,8 @@ async function insertStudent(userName,pWord,email,phone) {
     if(tableName=='SECTIONS')
     {
       const result = await connection.execute(
-        `insert into  sections values (:1,:2,:3) `  
-       ,[values.ID,values.CR_NAME,values.COURSES_ID],
+        `insert into  sections values (:1,:2) `  
+       ,[values.ID,values.CR_NAME],
        {autoCommit:true}  // bind value for :id
       );
      // console.log(result);
@@ -297,28 +297,61 @@ async function insertStudent(userName,pWord,email,phone) {
      
      return result
     }     
-    if(tableName=='TAKES')
+    if(tableName=='STUDENT_TAKES_COURSE')
     {
       const result = await connection.execute(
-        `insert into  TAKES values (:1,:2,:3,:4,:5,:6,:7,:8) `  
-       ,[values.STUDENT_ID,values.COURSES_ID,values.GPA,values.MID1,values.MID2,values.FINAL,values.ASS_QUIZZ,values.SECTIONS_ID],
+        `insert into  STUDENT_TAKES_COURSE values (:1,:2,:3,:4,:5,:6,:7,:8) `  
+       ,[values.STUDENT_ID,values.COURSES_ID,values.GPA,values.MID1,values.MID2,values.FINAL,values.ASS_QUIZZ,values.SEMESTER_SEMESTER_ID],
        {autoCommit:true}  // bind value for :id
       );
      // console.log(result);
      
      return result
     }    
-    if(tableName=='TEACHES')
+    if(tableName=='INSTRUCTOR_TEACHES_COURSE')
     {
       const result = await connection.execute(
-        `insert into  TEACHES values (:1,:2,:3,:4,:5) `  
-       ,[values.INSTRUCTOS_INS_ID,values.COURSES_ID,values.SECTION_ID],
+        `insert into  INSTRUCTOR_TEACHES_COURSE values (:1,:2,:3,:4) `  
+       ,[values.INSTRUCTOS_INS_ID,values.COURSES_ID,values.SECTION_ID,values.SEMESTER_SEMESTER_ID],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     return result
+    }  
+    if(tableName=='STUDENT_ALLOTTED_SECTIONS')
+    {
+      const result = await connection.execute(
+        `insert into STUDENT_ALLOTTED_SECTIONS values (:1,:2,:3,:4) `  
+       ,[values.STUDENT_ID,values.SECTIONS_ID,values.COURSES_ID,values.SEMESTER_SEMESTER_ID],
        {autoCommit:true}  // bind value for :id
       );
      // console.log(result);
      
      return result
-    }    
+    }  
+    if(tableName=='STUDENT_ENROLLED_IN_SEMESTER')
+    {
+      const result = await connection.execute(
+        `insert into STUDENT_ENROLLED_IN_SEMESTER values (:1,:2,:3,:4) `  
+       ,[values.STUDENT_ID,values.SEMESTER_SEMESTER_ID,values.SGPA,values.CRED_HRS],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     
+     return result
+    }
+    if(tableName=='DEPARTMENTS')
+    {
+      const result = await connection.execute(
+        `insert into DEPARTMENTS values (:1,:2,:3,:4,:5) `  
+       ,[values.D_NAME,values.D_CODE,values.D_PHONE,values.INSTRUCTORS_INS_ID,values.START_DATE],
+       {autoCommit:true}  // bind value for :id
+      );
+     // console.log(result);
+     
+     return result
+    } 
+       
 
     
      
@@ -335,7 +368,6 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
-
   async function getCoursesWithSections(name,ins_id) {
     
     let connection;
@@ -356,7 +388,7 @@ async function insertStudent(userName,pWord,email,phone) {
       // );
      // var temp=result.rows[0].ID
       const res = await connection.execute(
-        `select t.section_id from teaches t,courses c where c.id=t.courses_id and c.name=:1 and t.instructors_ins_id =:2 `  
+        `select t.section_id from INSTRUCTOR_TEACHES_COURSE t,courses c where c.id=t.courses_id and c.name=:1 and t.instructors_ins_id =:2 `  
        ,[name,ins_id],
        {autoCommit:true}  // bind value for :id
       );
@@ -380,8 +412,6 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
- 
-
   async function sectionsStudentRetreival(name,section_id) {
     
     let connection;
@@ -407,10 +437,11 @@ async function insertStudent(userName,pWord,email,phone) {
       // );
       // var temp=result.rows[0].ID
       const res = await connection.execute(
-        `select t.student_id,t.ASS_QUIZZ,t.mid1,t.mid2,t.final,t.gpa from takes t,courses c where c.id=t.courses_id and c.name LIKE :1 and t.sections_id LIKE :2 `  
-       ,[name,section_id],
+        `select t.student_id,t.ASS_QUIZZ,t.mid1,t.mid2,t.final,t.gpa from STUDENTS_OF_SECTIONS s, courses c where s.courses_id=c.id and s.SEMESTER_SEMESTER_ID=c.SEMESTER_SEMESTER_ID and c.name LIKE :1 and s.sections_id LIKE :2 `  
+        ,[name,section_id],
        {autoCommit:true}  // bind value for :id
       );
+
       console.log(res)
       for(var i=0;i<res.rows.length;i++)
       {
@@ -466,11 +497,11 @@ async function insertStudent(userName,pWord,email,phone) {
         var ass_quizz=enteries.ASS_QUIZZ[i]
         var gpa=enteries.SGPA[i]
          var result = await connection.execute(
-          //  `update takes set MID1=:2,MID2=:3,ASS_QUIZZ=:4,FINAL=:5,GPA=:6 where STUDENT_ID=:7 and COURSES_ID=:8 and SECTIONS_ID=:9 `  
+          //  `update STUDENT_TAKES_COURSE set MID1=:2,MID2=:3,ASS_QUIZZ=:4,FINAL=:5,GPA=:6 where STUDENT_ID=:7 and COURSES_ID=:8 and SECTIONS_ID=:9 `  
           // ,{2:enteries.MID_1[i],3:enteries.MID_2[i],4:enteries.ASS_QUIZZ[i],5:enteries.FINAL[i],6:enteries.GPA[i],7:enteries.STUDENT_ID[i],8:course_ID,9:selectedSection },
           // {autoCommit:true}  // bind value for :id
            
-          'update  takes set MID1=:1,MID2=:2,final=:4,gpa=:5,ass_quizz=:6  where student_id=:3 and courses_id=:7 and sections_id=:8'
+          'update  STUDENTS_OF_SECTIONS set MID1=:1,MID2=:2,final=:3,gpa=:4,ass_quizz=:5  where student_id=:6 and courses_id=:7 and sections_id=:8 and SEMESTER_SEMESTER_ID=(select SEMESTER_SEMESTER_ID from STUDENT_ALLOTTED_SECTIONS where where student_id=:6 and courses_id=:7 and sections_id=:8)'
           ,[mid1,mid2,final,gpa,ass_quizz,studentId,course_ID,selectedSection],{autoCommit:true}
          );
        } 
@@ -498,7 +529,7 @@ async function insertStudent(userName,pWord,email,phone) {
         connectString : "localhost:1521/xe"
       });
       var res=await connection.execute(
-        'select c.name from courses c,takes t where t.courses_id=c.id and t.student_id =:1'
+        'select c.name from courses c,STUDENT_TAKES_COURSE t where t.courses_id=c.id and t.student_id =:1'
         ,{1:std_id},
       )
       var queryResult=[]
@@ -530,7 +561,7 @@ async function insertStudent(userName,pWord,email,phone) {
         connectString : "localhost:1521/xe"
       });
       var res=await connection.execute(
-        'select * from courses c,departments d,semester s  where  c.semester_semester_id=s.semester_id and d.d_code=c.departments_d_code and s.name =:1 and c.id not in  (select courses_id from takes where student_id=:2)'
+        'select * from courses c,departments d,semester s  where  c.semester_semester_id=s.semester_id and d.d_code=c.departments_d_code and s.name =:1 and c.id not in  (select courses_id from STUDENT_TAKES_COURSE where student_id=:2)'
         ,{1:sem_name,2:studentID},
       )
       var queryResult={
@@ -572,9 +603,14 @@ async function insertStudent(userName,pWord,email,phone) {
       });
       var temp=0
       var res=await connection.execute(
-        'insert into takes values(:1,:2,:3,:4,:5,:6,:7,:8)'
-        ,{1:studentID,2:courseID,3:temp,4:temp,5:temp,6:temp,7:temp,8:section},{autoCommit:true}
+        'insert into STUDENT_TAKES_COURSE values(:1,:2,:3,:4,:5,:6,:7,NULL)'
+        ,{1:studentID,2:courseID,3:temp,4:temp,5:temp,6:temp,7:temp},{autoCommit:true}
       )
+      var test=await connection.execute(
+        'insert into STUDENT_ALLOTTED_SECTIONS values(:1,\'A\',:2,NULL)'
+        ,{1:studentID,2:courseID},{autoCommit:true}
+      )
+
       
       return res
      return 
@@ -590,7 +626,6 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
-
   function typeConverter(enteries)
   {
     for(var i=0;i<enteries.STUDENT_ID.length;i++)
@@ -626,7 +661,7 @@ async function insertStudent(userName,pWord,email,phone) {
       // );
       // var temp=result.rows[0].ID
       const res = await connection.execute(
-        'select DISTINCT s.NAME,s.ID,s.email from student s,takes t,courses c  where s.ID=t.student_ID and t.courses_id=c.id and c.name <>:1  and s.instructors_ins_id is null'
+        'select DISTINCT s.NAME,s.ID,s.email from student s,STUDENT_TAKES_COURSE t,courses c  where s.ID=t.student_ID and t.courses_id=c.id and c.name <>:1  and s.instructors_ins_id is null'
        ,[courseName],
        {autoCommit:true}  // bind value for :id
       );
@@ -701,7 +736,7 @@ async function insertStudent(userName,pWord,email,phone) {
         connectString : "localhost:1521/xe"
       });
       const res = await connection.execute(
-        'select t.ass_quizz,t.mid1,t.mid2,t.final from courses c,takes t where t.courses_id=c.id and t.student_id=:1 and c.name=:2'
+        'select t.ass_quizz,t.mid1,t.mid2,t.final from STUDENTS_OF_SECTIONS t where t.student_id=:1 and t.COURSES_ID = (select id from courses where name = :2)'
        ,[studentID,courseName],
        {autoCommit:true}  // bind value for :id
       );
