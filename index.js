@@ -116,18 +116,19 @@ app.get('/addInstructor',function(req,res){
 })
 var tableChecker=false
 app.get('/addintable',function(req,res){
-    if(tableChecker==false)
-    {
-        var Tables=['ALLOTED','COURSES','DEPARTMENTS','ENROLLED_IN','INSTRUCTORS','SECTONS','SEMESTER','STUDENT','TAKES','TEACHES']
-        res.render('addintable',{Tables:Tables,tableChecker:tableChecker})
-        tableChecker=true
-    }
+    console.log('ibuhatle')
+    
+        console.log('durr')
+        var Tables=['COURSES','DEPARTMENTS','INSTRUCTOR_TEACHES_COURSE','INSTRUCTORS','SECTIONS','SEMESTER','STUDENT',]
+    res.render('addintable',{Tables:Tables,tableChecker:tableChecker})
+      tableChecker=true
+    
 })
 app.post('/addintable',function(req,res){
     if(tableChecker==true)
     {
         var table=req.body.tableSelector
-        db.getTableData('Instructors').then(user=>{
+        db.getTableData(table).then(user=>{
         
             res.render('registerationforms',{tableTitle:table,RESULT:user})
             tableChecker=true
@@ -141,7 +142,7 @@ app.post('/Semester',function(req,res){
     console.log('machu')
 })
 
-app.post('/InsertIntoSemester',function(req,res){
+app.post('/InsertIntoSEMESTER',function(req,res){
         var values={
              DURATION:req.body.DURATION,
              NAME:req.body.NAME,
@@ -154,7 +155,7 @@ app.post('/InsertIntoSemester',function(req,res){
     
         })
 })
-app.post('/InsertIntoCourses',function(req,res){
+app.post('/InsertIntoCOURSES',function(req,res){
     var values={
          ID:req.body.ID,
          CREDIT_HOURS:req.body.CREDIT_HOURS,
@@ -163,6 +164,120 @@ app.post('/InsertIntoCourses',function(req,res){
          SEMESTER_SEMESTER_ID:req.body.SEMESTER_SEMESTER_ID
     }
      db.insertTable(values,'Courses').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+app.post('/InsertIntoDEPARTMENTS',function(req,res){
+    var values={
+         D_NAME:req.body.D_NAME,
+         D_CODE:req.body.D_CODE,
+        D_PHONE:req.body.D_PHONE,
+         INSTRUCTORS_INS_ID:req.body.INSTRUCTORS_ID,
+         START_DATE:req.body.START_DATE
+    }
+     db.insertTable(values,'DEPARTMENTS').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+app.post('/InsertIntoINSTRUCTOR_TEACHES_COURSE',function(req,res){
+    var values={
+         INSTRUCTORS_INS_ID:req.body.INSTRUCTORS_INS_ID,
+         COURSES_ID:req.body.COURSES_ID,
+         SECTION_ID:req.body.SECTION_ID,
+         SEMESTER_SEMESTER_ID:req.body.SEMESTER_SEMESTER_ID
+    }
+     db.insertTable(values,'INSTRUCTOR_TEACHES_COURSE').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+app.post('/InsertIntoINSTRUCTORS',function(req,res){
+    var values={
+         NAME:req.body.NAME,
+         INS_ID:req.body.INS_ID,
+         START_DATE:req.body.START_DATE,
+         SALARY:req.body.SALARY,
+         ADDRESS:req.body.ADDRESS,
+         EMAIL:req.body.EMAIL,
+         DEPARTMENTS_D_CODE:req.body.DEPARTMENTS_D_CODE,
+         DESIGNATION:req.body.DESIGNATION
+    }
+     db.insertTable(values,'INSTRUCTORS').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+app.post('/InsertIntoSTUDENT',function(req,res){
+    var values={
+         NAME:req.body.NAME,
+         BATCH:req.body.BATCH,
+         ID:req.body.ID,
+         ADDRESS:req.body.ADDRESS,
+         EMAIL:req.body.EMAIL,
+         INSTRUCTORS_INS_ID:req.body.INSTRUCTORS_INS_ID,
+         PAY:req.body.PAY
+    }
+     db.insertTable(values,'STUDENT').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+app.post('/InsertIntoSTUDENT_ALLOTTED_SECTIONS',function(req,res){
+    var values={
+         STUDENT_ID:req.body.STUDENT_ID,
+         SECTIONS_ID:req.body.SECTIONS_ID,
+         COURSES_ID:req.body.COURSES_ID,
+         SEMESTER_SEMESTER_ID:req.body.SEMESTER_SEMESTER_ID
+    }
+     db.insertTable(values,'STUDENT_ALLOTTED_SECTIONS').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+app.post('/InsertIntoSTUDENT_ENROLLED_IN_SEMESTER',function(req,res){
+    var values={
+         STUDENT_ID:req.body.STUDENT_ID,
+         SEMESTER_SEMESTER_ID:req.body.SEMESTER_SEMESTER_ID,
+         SGPA:req.body.SGPA,
+         CRED_HRS:req.body.CRED_HRS
+    }
+     db.insertTable(values,'STUDENT_ENROLLED_IN_SEMESTER').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+app.post('/InsertIntoSTUDENT_TAKES_COURSE',function(req,res){
+    var values={
+         STUDENT_ID:req.body.STUDENT_ID,
+         COURSES_ID:req.body.COURSES_ID,
+         GPA:req.body.GPA,
+         MID1:req.body.MID1,
+         MID2:req.body.MID2,
+         FINAL:req.body.FINAL,
+         ASS_QUIZZ:req.body.ASS_QUIZZ,
+         SEMESTER_SEMESTER_ID:req.SEMESTER_SEMESTER_ID
+    }
+     db.insertTable(values,'STUDENT_TAKES_COURSE').then(user=>{
+    
+         res.render('welcome',{isAdmin:true,isTeacher:false})
+
+     })
+})
+app.post('/InsertIntoSECTIONS',function(req,res){
+    var values={
+         ID:req.body.ID,
+         CR_NAME:req.body.CR_NAME,
+    }
+     db.insertTable(values,'SECTIONS').then(user=>{
     
          res.render('welcome',{isAdmin:true,isTeacher:false})
 

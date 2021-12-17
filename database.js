@@ -13,7 +13,7 @@ async function getStudent(userName,pWord) {
 
   try {
     connection = await oracledb.getConnection( {
-      user          : "Mordicai",
+      user          : "mord",
       password      : 'fast123',
       connectString : "localhost:1521/xe"
     });
@@ -46,7 +46,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -77,7 +77,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -109,7 +109,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -142,7 +142,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -201,7 +201,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -239,7 +239,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -288,9 +288,14 @@ async function insertStudent(userName,pWord,email,phone) {
     }   
     if(tableName=='STUDENT')
     {
+      // const result = await connection.execute(
+      //   `insert into  student values (:1,:2,:3,:4,:5,:6,:7) `  
+      //  ,[values.NAME,values.BATCH,values.ID,values.ADDRESS,values.EMAIL,values.INSTRUCTORS_INS_ID,values.PAY],
+      //  {autoCommit:true}  // bind value for :id
+      // );
       const result = await connection.execute(
-        `insert into  student values (:1,:2,:3,:4,:5,:6,:7) `  
-       ,[values.NAME,values.BATCH,values.ID,values.ADDRESS,values.EMAIL,values.INSTRUCTOS_INS_ID,values.PAY],
+        `insert into  student values (:1,:2,:3,:4,:5,null,null) `  
+       ,[values.NAME,values.BATCH,values.ID,values.ADDRESS,values.EMAIL],
        {autoCommit:true}  // bind value for :id
       );
      // console.log(result);
@@ -377,7 +382,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -426,7 +431,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -477,7 +482,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -524,7 +529,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -556,7 +561,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -597,7 +602,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -650,7 +655,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -694,7 +699,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -731,7 +736,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "Mordicai",
+        user          : "mord",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
