@@ -265,10 +265,10 @@ async function insertStudent(userName,pWord,email,phone) {
      
      return result
     }    
-    if(tableName=='Instructors')
+    if(tableName=='INSTRUCTORS')
     {
       const result = await connection.execute(
-        `insert into  instructors values (:1,:2,:3,:4,:5,:6,:7,:8) `  
+        `insert into  instructors values (:1,:2,TO_DATE(:3,'DD/MM/YYYY'),:4,:5,:6,:7,:8) `  
        ,[values.NAME,values.INS_ID,values.START_DATE,values.SALARY,values.ADDRESS,values.EMAIL,values.DEPARTMENTS_D_CODE,values.DESIGNATION],
        {autoCommit:true}  // bind value for :id
       );
@@ -317,7 +317,7 @@ async function insertStudent(userName,pWord,email,phone) {
     {
       const result = await connection.execute(
         `insert into  INSTRUCTOR_TEACHES_COURSE values (:1,:2,:3,:4) `  
-       ,[values.INSTRUCTOS_INS_ID,values.COURSES_ID,values.SECTION_ID,values.SEMESTER_SEMESTER_ID],
+       ,[values.INSTRUCTORS_INS_ID,values.COURSES_ID,values.SECTION_ID,values.SEMESTER_SEMESTER_ID],
        {autoCommit:true}  // bind value for :id
       );
      // console.log(result);
@@ -442,7 +442,7 @@ async function insertStudent(userName,pWord,email,phone) {
       // );
       // var temp=result.rows[0].ID
       const res = await connection.execute(
-        `select t.student_id,t.ASS_QUIZZ,t.mid1,t.mid2,t.final,t.gpa from STUDENTS_OF_SECTIONS s, courses c where s.courses_id=c.id and s.SEMESTER_SEMESTER_ID=c.SEMESTER_SEMESTER_ID and c.name LIKE :1 and s.sections_id LIKE :2 `  
+        `select t.student_id,t.ASS_QUIZZ,t.mid1,t.mid2,t.final,t.gpa from STUDENTS_OF_SECTIONS t, courses c where t.courses_id=c.id and t.SEMESTER_SEMESTER_ID=c.SEMESTER_SEMESTER_ID and c.name LIKE :1 and t.sections_id LIKE :2 `  
         ,[name,section_id],
        {autoCommit:true}  // bind value for :id
       );

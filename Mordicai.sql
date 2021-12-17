@@ -245,5 +245,63 @@ ALTER TABLE  "MORD"."INSTRUCTOR_TEACHES_COURSE" ADD CONSTRAINT "TEACHES_FK3" FOR
 CREATE OR REPLACE VIEW STUDENTS_OF_SECTIONS AS
 SELECT * from STUDENT_TAKES_COURSE natural join STUDENT_ALLOTTED_SECTIONS ;
 
-select * from STUDENTS_OF_SECTIONS s, courses c where s.courses_id=c.id and s.SEMESTER_SEMESTER_ID=c.SEMESTER_SEMESTER_ID;
-   
+
+create or replace trigger UPADTE_SEM_TAKESCOURSE
+before insert on STUDENT_TAKES_COURSE
+for each row
+declare
+var number;
+begin
+select semester_id into var from semester where start_date = (select max(start_date) from semester);
+:new.semester_semester_id := var;
+end;
+/
+create or replace trigger UPADTE_SEM_ALLOTSECTIONS
+before insert on STUDENT_ALLOTTED_SECTIONS
+for each row
+declare
+var number;
+begin
+select semester_id into var from semester where start_date = (select max(start_date) from semester);
+:new.semester_semester_id := var;
+end;
+/
+create or replace trigger Enroll_student
+after insert on Student
+for each row
+declare 
+var number;
+begin
+select semester_id into var from semester where start_date = (select max(start_date) from semester);
+insert into STUDENT_ENROLLED_IN_SEMESTER values(:new.id,var,0,0);
+end;
+/
+create or replace trigger update_credithours
+after insert on STUDENT_TAKES_COURSE
+for each row
+declare 
+var number;
+var2 number;
+begin
+update STUDENT_ENROLLED_IN_SEMESTER set cred_hrs = cred_hrs + (select credit_hours from courses where id = :new.COURSES_ID) where student_id = :new.student_id and SEMESTER_SEMESTER_ID=:new.SEMESTER_SEMESTER_ID;
+end;
+/
+create or replace trigger update_sgpa
+after update on STUDENT_TAKES_COURSE
+for each row
+declare 
+var number:=0;
+var2 number:=0;
+num number:=0;
+sg float:=0;
+begin
+for i in (select GPA , courses_id from STUDENT_TAKES_COURSE where student_id = :new.student_id)
+loop
+select credit_hours into var from courses where id = i.COURSES_ID;
+num := num + i.GPA*var;
+var2 := var2+var;
+end loop;
+sg:=num/var2;
+update STUDENT_ENROLLED_IN_SEMESTER set sgpa = sg where student_id = :new.student_id and SEMESTER_SEMESTER_ID = :new.SEMESTER_SEMESTER_ID;
+end;
+/
