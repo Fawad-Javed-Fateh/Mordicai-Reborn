@@ -11276,3 +11276,9 @@ header.masthead .site-heading .h1 {
   color: white;
   font-size: 30px;
 }
+.transContainer{
+  display: flex;
+  justify-content: space-between;
+  justify-content: space-around;
+}
+

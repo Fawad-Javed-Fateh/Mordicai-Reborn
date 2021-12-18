@@ -16,12 +16,18 @@ var userName
 var gradeChoiceChecker=0;
 var isTeacher;
 var currRunningSem=''
+var currSemID
 fs.readFile(__dirname+'/currsem.txt', 'utf-8',function (err, data) {
     if (err) throw err;
 
 currRunningSem=data
 });
-console.log(currRunningSem)
+fs.readFile(__dirname+'/currsemid.txt', 'utf-8',function (err, data) {
+    if (err) throw err;
+
+currSemID=data
+});
+console.log(currSemID)
 
 var student ={
    Name:"",
@@ -62,6 +68,8 @@ app.get('/home',function(req,res)
 })
 app.get('/grades')
 app.get('/ChooseCourses',function(req,res){
+    console.log(currRunningSem)
+    console.log('bodsdsds')
     db.coursesInGivenSem(currRunningSem,student.ID).then(user=>{
         res.render('studentchoosecourse',{currSem:currRunningSem,Courses:user})    
     })
@@ -73,7 +81,7 @@ app.post('/acceptinsertstudentcourse',function(req,res){
     var checked=req.body.checked
     for(var i=0;i<checked.length;i++)
     {
-        db.insertCourseInStudent(checked[i],student.ID,'A').then(user=>{
+        db.insertCourseInStudent(checked[i],student.ID,'A',currSemID).then(user=>{
             console.log('successfulyy inserted course ')
         })
     }
@@ -212,6 +220,32 @@ app.post('/InsertIntoINSTRUCTORS',function(req,res){
          res.render('welcome',{isAdmin:true,isTeacher:false})
 
      })
+})
+app.get('/updatestudent',function(req,res){
+    res.render('updatestudent.ejs')
+})
+app.post('/updatestudent',function(req,res){
+    var email=req.body.email
+    var address=req.body.Address
+    student.Address=address
+    student.Email=email
+    console.log(email+address)
+    db.updateStudent(student.ID,email,address).then(user=>{
+        res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:student.Name,BATCH:student.Batch,EMAIL:student.Email,ADDRESS:student.Address,ID:student.ID,INSTRUCTORS_ID:student.Instructor_Ins_ID,ALLOCATEDSECTION:student.Allocated_Section,PAY:student.Pay})
+    })
+})
+app.get('/updateteacher',function(req,res){
+    res.render('updateteacher.ejs')
+})
+app.post('/updateteacher',function(req,res){
+    var email=req.body.email
+    var address=req.body.Address
+    instructor.Address=address
+    instructor.Email=email
+    console.log(email+address)
+    db.updateTeacher(student.ID,email,address).then(user=>{
+        res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:instructor.Name,INS_ID:instructor.Ins_ID,ADDRESS:instructor.Address,START_DATE:instructor.Start_Date,EMAIL:instructor.Email})
+    })
 })
 app.post('/InsertIntoSTUDENT',function(req,res){
     var values={
@@ -380,6 +414,13 @@ app.post('/displaygradingtable',function(req,res){
         // })
     }
   
+})
+app.get('/viewtranscript',function(req,res){
+    db.getStudentSemesters(student.ID).then(user=>{
+        console.log('user is ')
+        console.log(user)
+        res.render('transcript',{Semester:user})
+    })
 })
 app.post('/acceptinserttable',function(req,res){
     console.log('maa keesdsdsd')

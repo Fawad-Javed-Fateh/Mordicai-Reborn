@@ -13,7 +13,7 @@ async function getStudent(userName,pWord) {
 
   try {
     connection = await oracledb.getConnection( {
-      user          : "mord",
+      user          : "mor",
       password      : 'fast123',
       connectString : "localhost:1521/xe"
     });
@@ -46,7 +46,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -77,7 +77,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -109,7 +109,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -142,7 +142,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -201,7 +201,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -239,7 +239,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -382,7 +382,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -431,7 +431,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -482,7 +482,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -500,16 +500,53 @@ async function insertStudent(userName,pWord,email,phone) {
         var studentId=enteries.STUDENT_ID[i]
         var final=enteries.FINAL[i]
         var ass_quizz=enteries.ASS_QUIZZ[i]
+        var grade=(final+ass_quizz+mid1+mid2)
         var gpa=enteries.SGPA[i]
+        if (grade >=86)
+        {
+          gpa=4
+        }
+        else if(grade>=82 && grade<86)
+        {
+          gpa=3.67
+        }
+        else if(grade>=78 && grade<82)
+        {
+          gpa=3.33
+        }
+        else if(grade>=74 && grade<78)
+        {
+          gpa=3.0
+        }
+        else if(grade>=66 && grade<74)
+        {
+          gpa=2.67
+        }
+        else if(grade>=60 && grade<66)
+        {
+          gpa=2.33
+        }
+        else if(grade>=50 && grade<60)
+        {
+          gpa=2.0
+        }
+        else{
+          grade=1.0
+        }
+        
+        var si=studentId
+        var ci=course_ID
+        var ss=selectedSection
          var result = await connection.execute(
           //  `update STUDENT_TAKES_COURSE set MID1=:2,MID2=:3,ASS_QUIZZ=:4,FINAL=:5,GPA=:6 where STUDENT_ID=:7 and COURSES_ID=:8 and SECTIONS_ID=:9 `  
           // ,{2:enteries.MID_1[i],3:enteries.MID_2[i],4:enteries.ASS_QUIZZ[i],5:enteries.FINAL[i],6:enteries.GPA[i],7:enteries.STUDENT_ID[i],8:course_ID,9:selectedSection },
           // {autoCommit:true}  // bind value for :id
            
-          'update  STUDENTS_OF_SECTIONS set MID1=:1,MID2=:2,final=:3,gpa=:4,ass_quizz=:5  where student_id=:6 and courses_id=:7 and sections_id=:8 and SEMESTER_SEMESTER_ID=(select SEMESTER_SEMESTER_ID from STUDENT_ALLOTTED_SECTIONS where where student_id=:6 and courses_id=:7 and sections_id=:8)'
-          ,[mid1,mid2,final,gpa,ass_quizz,studentId,course_ID,selectedSection],{autoCommit:true}
+          'update  STUDENT_TAKES_COURSE set MID1=:1,MID2=:2,final=:3,gpa=:4,ass_quizz=:5  where student_id=:6 and courses_id=:7  and SEMESTER_SEMESTER_ID=(select SEMESTER_SEMESTER_ID from STUDENT_ALLOTTED_SECTIONS where  student_id=:8 and courses_id=:9 and sections_id=:10)'
+          ,{1:mid1,2:mid2,3:final,4:gpa,5:ass_quizz,6:studentId,7:course_ID,8:si,9:ci,10:ss},{autoCommit:true}
          );
        } 
+       console.log('rqrqeqweqweqw')
       
       console.log(result)
      return 
@@ -529,7 +566,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -561,7 +598,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -598,22 +635,22 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
-  async function insertCourseInStudent(courseID,studentID,section) {
+  async function insertCourseInStudent(courseID,studentID,section,currSemID) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
       var temp=0
       var res=await connection.execute(
-        'insert into STUDENT_TAKES_COURSE values(:1,:2,:3,:4,:5,:6,:7,NULL)'
-        ,{1:studentID,2:courseID,3:temp,4:temp,5:temp,6:temp,7:temp},{autoCommit:true}
+        'insert into STUDENT_TAKES_COURSE values(:1,:2,:3,:4,:5,:6,:7,:8)'
+        ,{1:studentID,2:courseID,3:temp,4:temp,5:temp,6:temp,7:temp,8:currSemID},{autoCommit:true}
       )
       var test=await connection.execute(
-        'insert into STUDENT_ALLOTTED_SECTIONS values(:1,\'A\',:2,NULL)'
-        ,{1:studentID,2:courseID},{autoCommit:true}
+        'insert into STUDENT_ALLOTTED_SECTIONS values(:1,\'A\',:2,:3)'
+        ,{1:studentID,2:courseID,3:currSemID},{autoCommit:true}
       )
 
       
@@ -655,7 +692,7 @@ async function insertStudent(userName,pWord,email,phone) {
   
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -699,7 +736,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -736,7 +773,7 @@ async function insertStudent(userName,pWord,email,phone) {
     let connection;
     try {
       connection = await oracledb.getConnection( {
-        user          : "mord",
+        user          : "mor",
         password      : 'fast123',
         connectString : "localhost:1521/xe"
       });
@@ -772,6 +809,137 @@ async function insertStudent(userName,pWord,email,phone) {
       }
     }
   }
+  async function updateStudent(studentID,email,address) {
+    
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "mor",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      const res = await connection.execute(
+        'update  student set email=:1,address=:2 where id=:3'
+       ,[email,address,studentID],
+       {autoCommit:true}  // bind value for :id
+      );
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+  async function updateTeacher(teacherID,email,address) {
+    
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "mor",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      const res = await connection.execute(
+        'update  instructor set email=:1,address=:2 where id=:3'
+       ,[email,address,teacherID],
+       {autoCommit:true}  // bind value for :id
+      );
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+  async function getStudentSemesters(studentID) {
+    
+    let connection;
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "mor",
+        password      : 'fast123',
+        connectString : "localhost:1521/xe"
+      });
+      const res = await connection.execute(
+        'select  sem.name, s.semester_semester_id,s.sgpa,cor.credit_hours,c.gpa,c.courses_id,cor.name,sas.sections_id from STUDENT_ALLOTTED_SECTIONS sas,STUDENT_ENROLLED_IN_SEMESTER s,student_takes_course c,semester sem,courses cor  where   sas.student_id=c.student_id and sas.SEMESTER_SEMESTER_ID=s.SEMESTER_SEMESTER_ID and sas.COURSES_ID=c.COURSES_ID and s.student_id=c.student_id and c.COURSES_ID=cor.ID and s.semester_semester_id=sem.SEMESTER_ID and  s.semester_semester_id=c.semester_semester_id and s.student_id=:1'
+       ,[studentID],
+       {autoCommit:true}  // bind value for :id
+      );
+      console.log(res)
+      var tempID=[]
+      var tempName=[]  
+      for(var i=0;i<res.rows.length;i++)
+      {
+           tempID.push(res.rows[i].SEMESTER_SEMESTER_ID)
+           tempName.push(res.rows[i].NAME)
+      }
+      var IDS = [...new Set(tempID)];
+      var NAMES = [...new Set(tempName)];
+      var queryResult=[]
+    for(var i=0;i<IDS.length;i++)
+      {
+        var semInfo={
+          Name:NAMES[i],
+          ID:IDS[i],
+          GPA:0,
+          CRED_HRS:0,
+          COURSE_NAMES:[],
+          COURSE_IDS:[],
+          COURSE_SECTIONS:[],
+          COURSE_CREDIT_HRS:[],
+          COURSE_GPA:[]
+         }
+         queryResult.push(semInfo)
+      }
+      for(var i=0;i<IDS.length;i++)
+      {
+          for( var j=0;j<res.rows.length;j++)
+          {
+            if(queryResult[i].ID==res.rows[j].SEMESTER_SEMESTER_ID)
+            {
+              queryResult[i].COURSE_NAMES.push(res.rows[j].NAME_1)
+              queryResult[i].COURSE_GPA.push(res.rows[j].GPA)
+              queryResult[i].COURSE_IDS.push(res.rows[j].COURSES_ID)
+              queryResult[i].COURSE_CREDIT_HRS.push(res.rows[j].CREDIT_HOURS)
+              queryResult[i].COURSE_SECTIONS.push(res.rows[j].SECTIONS_ID)
+            }
+          }
+          var gpsum=0;
+          for(var j=0;j<queryResult[i].COURSE_CREDIT_HRS.length;j++)
+          {
+            queryResult[i].CRED_HRS+=queryResult[i].COURSE_CREDIT_HRS[j]
+            gpsum+=queryResult[i].COURSE_GPA[j]
+          }
+          queryResult[i].GPA=gpsum/queryResult[i].COURSE_GPA.length
+      }
+      console.log(queryResult)
+    
+      
+      
+     
+     return queryResult
+    } catch (err) {
+      console.error(err);
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
   //enteries=typeConverter(enteries)
   
  //insertGradesInTable(enteries,'Programming 101','A')
@@ -783,11 +951,18 @@ async function insertStudent(userName,pWord,email,phone) {
 //getStudentEnrolledCourses(8972)
 //coursesInGivenSem('Fall 2019',8972)
 //getNonTAStudents('Programming 101','A')
-getStudentMarksinCourse(8972,'Programming 101')
-
-
+//getStudentMarksinCourse(8972,'Programming 101')
+// var enteries={ 
+//   STUDENT_ID: [ 183, 184, 185, 186 ],
+//   ASS_QUIZZ: [ 5, 0, 0, 0 ],
+//   MID_1: [ 0, 0, 0, 0 ],
+//   MID_2: [ 0, 0, 0, 0 ],
+//   FINAL: [ 0, 0, 0, 0 ],
+//   SGPA: [ 0, 0, 0, 0 ]}
+// insertGradesInTable(enteries,'Programming 101','A')
 //insertStudent('Spongebob','123')
-
+//getStudentSemesters(183);
+//updateStudent(183,'cau@gmail.com','sao paulo')
 
 module.exports={
     insertStudent,
@@ -804,5 +979,8 @@ module.exports={
     insertCourseInStudent,
     getNonTAStudents,
     assignStudentAsTA,
-    getStudentMarksinCourse
+    getStudentMarksinCourse,
+    getStudentSemesters,
+    updateStudent,
+    updateTeacher
 }
