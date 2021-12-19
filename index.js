@@ -27,7 +27,7 @@ fs.readFile(__dirname+'/currsemid.txt', 'utf-8',function (err, data) {
 
 currSemID=data
 });
-console.log(currSemID)
+
 
 var student ={
    Name:"",
@@ -68,8 +68,6 @@ app.get('/home',function(req,res)
 })
 app.get('/grades')
 app.get('/ChooseCourses',function(req,res){
-    console.log(currRunningSem)
-    console.log('bodsdsds')
     db.coursesInGivenSem(currRunningSem,student.ID).then(user=>{
         res.render('studentchoosecourse',{currSem:currRunningSem,Courses:user})    
     })
@@ -77,7 +75,7 @@ app.get('/ChooseCourses',function(req,res){
 })
 app.post('/acceptinsertstudentcourse',function(req,res){
     
-    console.log(req.body.checked.length)
+    
     var checked=req.body.checked
     for(var i=0;i<checked.length;i++)
     {
@@ -90,6 +88,12 @@ app.post('/acceptinsertstudentcourse',function(req,res){
 app.post('/acceptassignedTA',function(req,res){
     console.log(req.body.checked.length)
     var checked=req.body.checked
+
+    db.assignStudentAsTA(checked,instructor.Ins_ID,20000).then(user=>{
+         
+    })
+    res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:instructor.Name,INS_ID:instructor.Ins_ID,ADDRESS:instructor.Address,START_DATE:instructor.Start_Date,EMAIL:instructor.Email})
+    
 })
 
 app.get('/viewcourses',function(req,res){
@@ -124,9 +128,7 @@ app.get('/addInstructor',function(req,res){
 })
 var tableChecker=false
 app.get('/addintable',function(req,res){
-    console.log('ibuhatle')
     
-        console.log('durr')
         var Tables=['COURSES','DEPARTMENTS','INSTRUCTOR_TEACHES_COURSE','INSTRUCTORS','SECTIONS','SEMESTER','STUDENT',]
     res.render('addintable',{Tables:Tables,tableChecker:tableChecker})
       tableChecker=true
@@ -139,7 +141,7 @@ app.post('/addintable',function(req,res){
         db.getTableData(table).then(user=>{
         
             res.render('registerationforms',{tableTitle:table,RESULT:user})
-            tableChecker=true
+            tableChecker=false
     
         })
 
@@ -147,7 +149,7 @@ app.post('/addintable',function(req,res){
 })
 
 app.post('/Semester',function(req,res){
-    console.log('machu')
+    
 })
 
 app.post('/InsertIntoSEMESTER',function(req,res){
@@ -320,13 +322,12 @@ app.post('/InsertIntoSECTIONS',function(req,res){
 var Checker=false
 var sectionChecker=false
 app.get('/addta',function(req,res){
-    console.log('dry')
+  
     if(Checker==false)
     {
         db.getTeacherCourses(instructor.Ins_ID).then(user=>{
         
-            console.log('sdsadas')
-            console.log(user)
+            
             res.render('addta',{Courses:user.CourseName,Checker:Checker,sectionChecker:sectionChecker})
             
             sectionChecker=true;
@@ -339,8 +340,7 @@ app.get('/addmarks',function(req,res){
     {
         db.getTeacherCourses(instructor.Ins_ID).then(user=>{
         
-            console.log('sdsadas')
-            console.log(user)
+            
             res.render('addgradeviewer',{Courses:user.CourseName,Checker:Checker,sectionChecker:sectionChecker})
             
             sectionChecker=true;
@@ -354,7 +354,7 @@ app.post('/displaystudentlist',function(req,res){
     if(sectionChecker==true)
     {
         selectedCourse=req.body.courseSelector
-        console.log('yoloolo')
+        
         //console.log (selectedCourse)
             db.getCoursesWithSections(selectedCourse,instructor.Ins_ID).then(user=>{
                 
@@ -423,7 +423,7 @@ app.get('/viewtranscript',function(req,res){
     })
 })
 app.post('/acceptinserttable',function(req,res){
-    console.log('maa keesdsdsd')
+   
     db.insertGradesInTable(req.body,selectedCourse,selectedSection).then(user=>{
         console.log('prehaps this worked')
         res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:instructor.Name,INS_ID:instructor.Ins_ID,ADDRESS:instructor.Address,START_DATE:instructor.Start_Date,EMAIL:instructor.Email})
@@ -451,7 +451,7 @@ app.post("/grades",function(req,res){
         console.log(semester)
         console.log(semester)
         db.getStudentEnrolledCourses(student.ID).then(user=>{
-            console.log('asdasda')
+            
             console.log(user)
             res.render('grades',{Semesters:user})
         })
@@ -525,7 +525,7 @@ app.post("/",function(req,res){
             }
             else
             {      
-                console.log("kesa hai ye alam")
+                
             }
          
     
@@ -550,7 +550,7 @@ app.post("/",function(req,res){
             }
             else
             {      
-                console.log("kesa hai ye alam")
+               
             }
         })
     }

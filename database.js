@@ -769,7 +769,6 @@ async function insertStudent(userName,pWord,email,phone) {
     }
   }
   async function getStudentMarksinCourse(studentID,courseName) {
-    
     let connection;
     try {
       connection = await oracledb.getConnection( {
@@ -793,9 +792,7 @@ async function insertStudent(userName,pWord,email,phone) {
       queryResult.MID2=res.rows[0].MID2
       queryResult.FINALS=res.rows[0].FINAL
       queryResult.ASS_QUIZZ=res.rows[0].ASS_QUIZZ
-      
       console.log(queryResult)
-     
      return queryResult
     } catch (err) {
       console.error(err);
@@ -961,7 +958,7 @@ async function insertStudent(userName,pWord,email,phone) {
 //   SGPA: [ 0, 0, 0, 0 ]}
 // insertGradesInTable(enteries,'Programming 101','A')
 //insertStudent('Spongebob','123')
-//getStudentSemesters(183);
+getStudentSemesters(203);
 //updateStudent(183,'cau@gmail.com','sao paulo')
 
 module.exports={
