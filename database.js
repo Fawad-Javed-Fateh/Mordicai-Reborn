@@ -732,6 +732,10 @@ async function insertStudent(userName,pWord,email,phone) {
     }
   }
   async function assignStudentAsTA(studentID,instructorID,pay) {
+
+    studentID=Number(studentID)
+    instructorID=Number(instructorID)
+    pay=Number(pay)
     
     let connection;
     try {
@@ -747,13 +751,13 @@ async function insertStudent(userName,pWord,email,phone) {
       // );
       // var temp=result.rows[0].ID
       const res = await connection.execute(
-        'update student set instructor_ins_id=:1 and pay=:2 where id=:3'
+        'update student set instructors_ins_id=:1 , pay=:2 where id=:3'
        ,[instructorID,pay,studentID],
        {autoCommit:true}  // bind value for :id
       );
       console.log(res)
       
-      console.log(queryResult)
+      //console.log(queryResult)
      
      return queryResult
     } catch (err) {
