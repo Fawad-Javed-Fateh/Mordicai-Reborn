@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Clean Blog - Start Bootstrap Theme</title>
+        <title>Modicai Reborn</title>
         <link rel="icon" type="image/x-icon" href="/public/assets/favicon.ico" />
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
@@ -211,6 +211,22 @@
                             <h3 class="post-subtitle">Many say exploration is part of our destiny, but it’s actually our duty to future generations.</h3>
                         </a>
                     </div>
+                    <%if (INSTRUCTORS_ID == null){%>
+                        
+                        <%} else{%>
+                            <div class="post-preview">
+                                <a href="post.html">
+                                    <h2 class="post-title">Instructors ID : <%= INSTRUCTORS_ID %></h2>
+                                    <h3 class="post-subtitle">Assist ? more like secretary</h3>
+                                </a>
+                            </div>
+                            <div class="post-preview">
+                                <a href="post.html">
+                                    <h2 class="post-title">PAY : <%= PAY%></h2>
+                                    <h3 class="post-subtitle">It aint much but its honest work.</h3>
+                                </a>
+                            </div>    
+                            <%}%>
                     <!-- Divider-->
                     <hr class="my-4" />
                     <!-- Pager-->

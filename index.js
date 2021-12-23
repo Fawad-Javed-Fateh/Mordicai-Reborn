@@ -37,7 +37,8 @@ var student ={
    Email:"",
    Instructor_Ins_ID:0,
    Allocated_Section:"",
-   Pay:0
+   Pay:0,
+   Ins_name:""
 }
 var instructor={
     Name:"",
@@ -88,6 +89,8 @@ app.post('/acceptinsertstudentcourse',function(req,res){
 app.post('/acceptassignedTA',function(req,res){
     console.log(req.body.checked.length)
     var checked=req.body.checked
+    console.log("checked is " +checked)
+    
 
     db.assignStudentAsTA(checked,instructor.Ins_ID,20000).then(user=>{
          
@@ -545,6 +548,37 @@ app.post("/",function(req,res){
                 student.Instructor_Ins_ID=user.rows[0].INSTRUCTORS_INS_ID
                 student.Pay=user.rows[0].PAY
                 student.Address=user.rows[0].ADDRESS
+                console.log(student)
+                var hamun=''
+                var trig
+                if(student.Instructor_Ins_ID==null)
+                {
+
+                }
+                else
+                {
+                    db.getTeacher('yada',student.Instructor_Ins_ID).then(user=>{
+                        console.log("fivvvvvver" +(user.rows[0].NAME))
+                        student.Ins_name=user.rows[0].NAME
+                        console.log('asuayfuasyf asuaysfua sifua ' +student.Ins_name)
+                        hamun=user.rows[0].NAME
+                        console.log("asdasudyaiusyda " +hamun)
+                        //trig=user
+                        console.log(trig)
+                        student.Instructor_Ins_ID=toString(student.Instructor_Ins_ID)
+                        student.Instructor_Ins_ID=user.rows[0].NAME
+                        
+                    })
+                }
+               
+                console.log(typeof(student.Instructor_Ins_ID))
+                var str=""
+                str=student.Instructor_Ins_ID
+                str=toString(str)
+                hamun=toString(hamun)
+                console.log(typeof(hamun))
+                console.log(typeof(str))
+               // console.log("hamun" + trig.rows[0].NAME)
 
                 res.render('welcome',{isAdmin:false,isTeacher:isTeacher,NAME:student.Name,BATCH:student.Batch,EMAIL:student.Email,ADDRESS:student.Address,ID:student.ID,INSTRUCTORS_ID:student.Instructor_Ins_ID,ALLOCATEDSECTION:student.Allocated_Section,PAY:student.Pay})
             }
