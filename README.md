@@ -4,7 +4,7 @@
 * Front-End contrived using ***Ejs veiwing engine*** and ***Bootstrap 4.0*** 
 • Utilized ***Oracle Database 19c*** to maintain and store databases
 
-##How to run:
+## How to run:
 
 After forking to your local machine, initialise and install the dependencies using :
 ```
